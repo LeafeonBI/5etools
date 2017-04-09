@@ -4,12 +4,14 @@ window.onload = loadparser
 
 function loadparser() {
 	// parse it on click
-	$("input#parsestatblock").click(function() {
+	$("button#parsestatblock").click(function() {
 		var statblock = $("textarea#statblock").val().split("\n");
 		var stats = {};
 
 		for (var i = 0; i < statblock.length; i++) {
 			var curline = statblock[i];
+
+			stats.source = $("input#source").val();
 
 			// name of monster
 			if (i === 0) {
@@ -20,7 +22,8 @@ function loadparser() {
 			// size type alignment
 			if (i === 1) {
 				stats.size = curline[0];
-				stats.type = curline.split(",")[0].split(" ").splice(1).join(" ") + ", " + $("input#source").val();
+				stats.type = curline.split(",")[0].split(" ").splice(1).join(" "); // + ", " + $("input#source").val();
+
 				stats.alignment = curline.split(", ")[1];
 				continue;
 			}
@@ -175,6 +178,6 @@ function loadparser() {
 		}
 
 
-		$("textarea#output").text(JSON.stringify (stats, null, " "));
+		$("textarea#jsonoutput").text(JSON.stringify (stats, null, " "));
 	})
 }

@@ -1,7 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-	<meta charset="utf-8" >
+	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 
@@ -15,269 +16,14 @@
 
 -->
 
-<title>Bestiary - 5etools</title>
+	<title>Bestiary - 5etools</title>
 
-<link rel="stylesheet" href="css/bootstrap.css">
-<link rel="icon" href="favicon.png">
+	<link rel="stylesheet" href="css/bootstrap.css">
+	<link rel="stylesheet" href="css/style.css">
+	<link rel="icon" href="favicon.png">
 
-<link href="https://fonts.googleapis.com/css?family=Andada|Convergence" rel="stylesheet">
-<style type="text/css">
-header {
-	margin-bottom: 3px;
-	padding: 25px 15px;
-	color: white;
-	background-color: rgb(0, 107, 196);
-}
-
-header p.lead {
-	color: lightgrey;
-}
-
-
-main {
-	padding: 10px 15px;
-}
-
-footer {
-	padding: 20px 15px;
-	font-size: 90%;
-}
-
-input.search {
-	width: 100%;
-}
-
-form#filtertools {
-	font-size: 0.8em;
-}
-
-form#filtertools select {
-	margin: 1px;
-}
-
-.sortlabel {
-	display: block;
-	/*float: right;
-	text-align: right;
-	padding: 1px;*/
-}
-
-.sortlabel span {
-	background: lightgrey;
-	border-radius: 3px;
-	padding: 2px;
-	text-align: right;
-}
-
-.sortlabel:hover span:hover {
-	background: grey;
-	color: white;
-	cursor: pointer;
-}
-
-ul#monsters {
-	list-style-type: none;
-	padding-left: 0px;
-	height: 100%;
-	max-height: 40em;
-	overflow-y: scroll;
-	overflow-x: hidden;
-	padding-top: 1em;
-	clear: both;
-	font-size: 0.8em;
-}
-
-ul#monsters li {
-	padding: 1px;
-	cursor: pointer;
-	display: block;
-	border-bottom: 1px solid #ddd;
-	max-height: 3em;
-	overflow-y: hidden;
-}
-
-ul#monsters li:hover {
-	background: lightgrey;
-}
-
-ul#monsters li:active {
-	color: white;
-}
-
-ul#monsters li span {
-	padding: 1px;
-}
-
-ul#monsters li span.name {
-	font-weight: bold;
-}
-
-ul#monsters li:hover span {
-	display: block;
-}
-
-ul#monsters li span.name, ul#monsters li span.source {
-	display: inline-block;
-	text-transform: capitalize;
-}
-
-th#name span.source {
-	display: inline-block;
-	float: right;
-	font-weight: 500;
-	margin-left: 0.5em;
-	margin-right: -0.3em;
-	font-size: 0.8em;
-}
-
-span.sourceMM {
-	color: green;
-}
-
-span.sourceVGM {
-	color: grey;
-}
-
-span.sourceToD {
-	color: orangered;
-}
-
-span.sourceCoS {
-	color: purple;
-}
-
-span.sourceOotA {
-	color: black;
-}
-
-span.sourceSKT {
-	color: darkcyan;
-}
-
-span.sourcePotA {
-	color: blue;
-}
-
-span.sourceLMoP {
-	color: lightgreen;
-}
-
-table#stats {
-	width: 100%;
-	margin: auto;
-	font-size: .9em;
-	font-family: 'Convergence', sans-serif;
-	table-layout: fixed;
-}
-
-table#stats td, table#stats th {
-	padding: 1px 0.7em;
-}
-
-th.border {
-	height: 10px;
-	background: #e69a28;
-	border: 1px solid black;
-	display: none;
-}
-
-td.divider {
-	padding: 0 4px!important;
-}
-
-td.divider div {
-	/*background: #922610;*/
-	background: black;
-	height: 4px;
-	margin: 4px 0;
-}
-
-th#name {
-	font-size: 1.8em;
-	font-family: 'Andada', serif;
-	font-variant: small-caps;
-	font-weight: 500;
-	padding-left: 0.2em!important;
-}
-
-table#stats td#sizetypealignment {
-	font-style: italic;
-	color: black;
-}
-
-tr#abilitynames th {
-	text-align: center;
-	font-weight: bold;
-}
-
-tr#abilityscores td {
-	text-align: center;
-	width: 16%;
-}
-
-span.name {
-	font-weight: bold;
-}
-
-tr.trait td p.spells {
-	margin-bottom: 0px;
-}
-
-tr#actions td, tr#reactions td, tr#legendaries td {
-	font-size: 1.6em;
-	font-family: 'Andada', serif;
-	font-variant: small-caps;
-	/*border-bottom: 1px solid #a8513b;*/
-	border-bottom: 1px solid #000;
-	vertical-align: bottom!important;
-	padding-left: 0.2em;
-}
-
-tr#actions td span, tr#reactions td span, tr#legendaries td span {
-	display: block;
-	margin-bottom: -0.3em;
-	font-weight: 100;
-}
-
-tr.trait td, tr.action td, tr.reaction td, tr.legendary td {
-	padding-bottom: 0.7em!important;
-	color: black!important;
-}
-
-tr.trait:last-of-type td, tr.action:last-of-type td, tr.reaction:last-of-type td, tr.legendary:last-of-type td {
-	padding-bottom: 0px!important;
-}
-
-p.first {
-	display: inline;
-}
-
-p.second {
-	margin-top: 1em;
-}
-tr td > p.spells {
-	margin-top: 1em!important;
-}
-
-tr td > p.spells ~ p.spells{
-	margin-top: 0em!important;
-}
-
-#stats span.roller {
-	color: #337ab7;
-	cursor: pointer;
-}
-
-#output {
-	margin: 1em 0;
-	padding: 0.2em 0.7em;
-	background: lightgrey;
-	border-radius: 0.2em;
-	display: none;
-}
-
-</style>
 </head>
+
 <body>
 	<header class="hidden-xs hidden-sm">
 		<div class="container">
@@ -287,37 +33,45 @@ tr td > p.spells ~ p.spells{
 		</div>
 	</header>
 	<nav class="container">
-			<ul class="nav nav-pills ">
-				<li role="presentation"><a href="5etools.html">5eTools</a></li>
-				<li role="presentation" class="dropdown">
-					<a class="dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">Player Options <span class="caret"></span></a>
-					<ul class="dropdown-menu">
-						<li role="presentation"><a href="classes.html">Classes</a></li>
-						<li role="presentation"><a href="backgrounds.html">Backgrounds</a></li>
-						<li role="presentation"><a href="feats.html">Feats</a></li>
-						<li role="presentation"><a href="races.html">Races</a></li>
-					</ul>
-				</li>
-				<li role="presentation" class="dropdown">
-					<a class="dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">DM Tools <span class="caret"></span></a>
-					<ul class="dropdown-menu">
-						<li role="presentation"><a href="crcalculator.html">CR Calculator</a></li>
-						<li role="presentation"><a href="http://kobold.club" target="_blank" title="I could literally never build something better than Kobold Fight Club">Encounter Builder</a></li>
-						<li role="presentation"><a href="lootgen.html">Loot Generator</a></li>
-					</ul>
-				</li>
-				<li role="presentation" class="dropdown active">
-					<a class="dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">References <span class="caret"></span></a>
-					<ul class="dropdown-menu">
-						<li role="presentation" class="active"><a href="bestiary.html">Bestiary</a></li>
-						<li role="presentation"><a href="conditions.html">Conditions</a></li>
-						<li role="presentation"><a href="items.html">Items</a></li>
-						<li role="presentation"><a href="spells.html">Spells</a></li>
-					</ul>
-				</li>
-				<li role="presentation"><a href="statgen.html">Statgen</a></li>
-			</ul>
-		</nav>
+		<ul class="nav nav-pills ">
+			<li role="presentation"><a href="5etools.html">5eTools</a></li>
+			<li role="presentation"><a href="rules.html">Rules</a></li>
+			<li role="presentation" class="dropdown">
+				<a class="dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">Player Options <span class="caret"></span></a>
+				<ul class="dropdown-menu">
+					<li role="presentation"><a href="classes.html">Classes</a></li>
+					<li role="presentation"><a href="backgrounds.html">Backgrounds</a></li>
+					<li role="presentation"><a href="feats.html">Feats</a></li>
+					<li role="presentation"><a href="races.html">Races</a></li>
+				</ul>
+			</li>
+			<li role="presentation" class="dropdown">
+				<a class="dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">DM Tools <span class="caret"></span></a>
+				<ul class="dropdown-menu">
+					<li role="presentation"><a href="crcalculator.html">CR Calculator</a></li>
+					<li role="presentation"><a href="http://kobold.club" target="_blank" title="I could literally never build something better than Kobold Fight Club">Encounter Builder</a></li>
+					<li role="presentation"><a href="lootgen.html">Loot Generator</a></li>
+				</ul>
+			</li>
+			<li role="presentation" class="dropdown active">
+				<a class="dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">References <span class="caret"></span></a>
+				<ul class="dropdown-menu">
+					<li role="presentation" class="active"><a href="bestiary.html">Bestiary</a></li>
+					<li role="presentation"><a href="conditions.html">Conditions</a></li>
+					<li role="presentation"><a href="items.html">Items</a></li>
+					<li role="presentation"><a href="spells.html">Spells</a></li>
+				</ul>
+			</li>
+			<li role="presentation"><a href="statgen.html">Statgen</a></li>
+			<li role="presentation" class="dropdown">
+				<a class="dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">Utilities<span class="caret"></span></a>
+				<ul class="dropdown-menu">
+					<li role="presentation"><a href="converter.html">Stat Block to JSON</a></li>
+					<li role="presentation"><a href="editor.html">WYSIWYG Editor</a></li>
+				</ul>
+			</li>
+		</ul>
+	</nav>
 	<main class="container bodyContent">
 
 		<div class="row">
@@ -345,109 +99,136 @@ tr td > p.spells ~ p.spells{
 					<select class="typefilter">
 						<option value="All">All Types</option>
 					</select>
-						<span class="sortlabel btn-group">
+					<span class="sortlabel btn-group">
 							<button class="col-xs-4 sort btn btn-default btn-xs" type="button" sort="name" sortby="asc">Name</button>
 							<button class="col-xs-2 sort btn btn-default btn-xs" type="button" sort="source" sortby="asc">Source</button>
 							<button class="col-xs-3 sort btn btn-default btn-xs" type="button" sort="type" sortby="asc">Type</button>
 							<button class="col-xs-3 sort btn btn-default btn-xs" type="button" sort="cr" sortby="asc">CR</button>
 						</span>
 				</form>
-					<ul id="monsters" class="list">
+				<ul id="monsters" class="list">
 
-					</ul>
+				</ul>
 				<hr>
 			</div>
 			<div class="col-sm-6">
-					<table id="stats">
-						<tr><th class="border" colspan="6"></th></tr>
-						<tr>
-							<th id="name" colspan="6">Name <span class="source" title="Source book">SRC</source></th>
+				<img src="" alt="" id="token">
+				<table id="stats" class="monster">
+					<tr>
+						<th class="border" colspan="6"></th>
+					</tr>
+					<tr>
+						<th id="name" colspan="6">Name <span class="source" title="Source book">SRC</source></th>
 							</tr>
 							<tr>
 								<td id="sizetypealignment" colspan="6"><span id="size">Size</span> <span id="type">type</span>, <span id="alignment">alignment</span></td>
-							</tr>
-							<tr><td class="divider" colspan="6"><div></div></td></tr>
-							<tr>
-								<td colspan="6"><strong>Armor Class</strong> <span id="ac">## (source)</span></td>
-							</tr>
-							<tr>
-								<td colspan="6"><strong>Hit Points</strong> <span id="hp">hp</span></td>
-							</tr>
-							<tr>
-								<td colspan="6"><strong>Speed</strong> <span id="speed">30 ft.</span></td>
-							</tr>
-							<tr><td class="divider" colspan="6"><div></div></td></tr>
-							<tr id="abilitynames">
-								<th>STR </th>
-								<th>DEX </th>
-								<th>CON </th>
-								<th>INT </th>
-								<th>WIS </th>
-								<th>CHA </th>
-							</tr>
-							<tr id="abilityscores">
-								<td id="str"><span class="score">10</span> (<span class="mod">0</span>)</td>
-								<td id="dex"><span class="score">10</span> (<span class="mod">0</span>)</td>
-								<td id="con"><span class="score">10</span> (<span class="mod">0</span>)</td>
-								<td id="int"><span class="score">10</span> (<span class="mod">0</span>)</td>
-								<td id="wis"><span class="score">10</span> (<span class="mod">0</span>)</td>
-								<td id="cha"><span class="score">10</span> (<span class="mod">0</span>)</td>
-							</tr>
-							<tr><td class="divider" colspan="6"><div></div></td></tr>
-							<tr>
-								<td colspan="6"><strong>Saving Throws</strong> <span id="saves">Str +0</span></td>
-							</tr>
-							<tr>
-								<td colspan="6"><strong>Skills</strong> <span id="skills">Perception +0</span></td>
-							</tr>
-							<tr>
-								<td colspan="6"><strong>Damage Vulnerabilities</strong> <span id="dmgvuln">fire</span></td>
-							</tr>
-							<tr>
-								<td colspan="6"><strong>Damage Resistances</strong> <span id="dmgres">cold</span></td>
-							</tr>
-							<tr>
-								<td colspan="6"><strong>Damage Immunities</strong> <span id="dmgimm">lightning</span></td>
-							</tr>
-							<tr>
-								<td colspan="6"><strong>Condition Immunities</strong> <span id="conimm">exhaustion</span></td>
-							</tr>
-							<tr>
-								<td colspan="6"><strong>Senses</strong> <span id="senses">darkvision 30 ft.</span> passive Perception <span id="pp">10</span></td>
-							</tr>
-							<tr>
-								<td colspan="6"><strong>Languages</strong> <span id="languages">Common</span></td>
-							</tr>
-							<tr>
-								<td colspan="6"><strong>Challenge</strong> <span id="cr">1</span> (<span id="xp">450</span> XP)</td>
-							</tr>
-							<tr id="traits"><td class="divider" colspan="6"><div></div></td></tr>
-							<tr class="trait">
-								<td colspan="6"><span class="name">Trait.</span> <span class="content">Content.</span></td>
-							</tr>
-							<tr id="actions"><td colspan="6"><span>Actions</span></td></tr>
-							<tr class="action">
-								<td colspan="6"><span class="name">Action.</span> <span class="content">Content.</span></td>
-							</tr>
-							<tr id="reactions"><td colspan="6"><span>Reactions</span></td></tr>
-							<tr class="reaction">
-								<td colspan="6"><span class="name">Reaction.</span> <span class="content">Content.</span></td>
-							</tr>
-							<tr id="legendaries"><td colspan="6"><span>Legendary Actions</span></td></tr>
-							<tr class="legendary">
-								<td colspan="6"><span class="name">Action.</span> <span class="content">Content.</span></td>
-							</tr>
-							<tr><th class="border" colspan="6"></th></tr>
-						</table>
-					<div id="output"></div>
-					<br>
-					<button class="btn btn-block btn-default btn-xs" type="button" id="expandcollapse">Toggle Search</button>
-				</div>
+					</tr>
+					<tr>
+						<td class="divider" colspan="6">
+							<div></div>
+						</td>
+					</tr>
+					<tr>
+						<td colspan="6"><strong>Armor Class</strong> <span id="ac">## (source)</span></td>
+					</tr>
+					<tr>
+						<td colspan="6"><strong>Hit Points</strong> <span id="hp">hp</span></td>
+					</tr>
+					<tr>
+						<td colspan="6"><strong>Speed</strong> <span id="speed">30 ft.</span></td>
+					</tr>
+					<tr>
+						<td class="divider" colspan="6">
+							<div></div>
+						</td>
+					</tr>
+					<tr id="abilitynames">
+						<th>STR </th>
+						<th>DEX </th>
+						<th>CON </th>
+						<th>INT </th>
+						<th>WIS </th>
+						<th>CHA </th>
+					</tr>
+					<tr id="abilityscores">
+						<td id="str"><span class="score">10</span> (<span class="mod">0</span>)</td>
+						<td id="dex"><span class="score">10</span> (<span class="mod">0</span>)</td>
+						<td id="con"><span class="score">10</span> (<span class="mod">0</span>)</td>
+						<td id="int"><span class="score">10</span> (<span class="mod">0</span>)</td>
+						<td id="wis"><span class="score">10</span> (<span class="mod">0</span>)</td>
+						<td id="cha"><span class="score">10</span> (<span class="mod">0</span>)</td>
+					</tr>
+					<tr>
+						<td class="divider" colspan="6">
+							<div></div>
+						</td>
+					</tr>
+					<tr>
+						<td colspan="6"><strong>Saving Throws</strong> <span id="saves">Str +0</span></td>
+					</tr>
+					<tr>
+						<td colspan="6"><strong>Skills</strong> <span id="skills">Perception +0</span></td>
+					</tr>
+					<tr>
+						<td colspan="6"><strong>Damage Vulnerabilities</strong> <span id="dmgvuln">fire</span></td>
+					</tr>
+					<tr>
+						<td colspan="6"><strong>Damage Resistances</strong> <span id="dmgres">cold</span></td>
+					</tr>
+					<tr>
+						<td colspan="6"><strong>Damage Immunities</strong> <span id="dmgimm">lightning</span></td>
+					</tr>
+					<tr>
+						<td colspan="6"><strong>Condition Immunities</strong> <span id="conimm">exhaustion</span></td>
+					</tr>
+					<tr>
+						<td colspan="6"><strong>Senses</strong> <span id="senses">darkvision 30 ft.</span> passive Perception <span id="pp">10</span></td>
+					</tr>
+					<tr>
+						<td colspan="6"><strong>Languages</strong> <span id="languages">Common</span></td>
+					</tr>
+					<tr>
+						<td colspan="6"><strong>Challenge</strong> <span id="cr">1</span> (<span id="xp">450</span> XP)</td>
+					</tr>
+					<tr id="traits">
+						<td class="divider" colspan="6">
+							<div></div>
+						</td>
+					</tr>
+					<tr class="trait">
+						<td colspan="6"><span class="name">Trait.</span> <span class="content">Content.</span></td>
+					</tr>
+					<tr id="actions">
+						<td colspan="6"><span>Actions</span></td>
+					</tr>
+					<tr class="action">
+						<td colspan="6"><span class="name">Action.</span> <span class="content">Content.</span></td>
+					</tr>
+					<tr id="reactions">
+						<td colspan="6"><span>Reactions</span></td>
+					</tr>
+					<tr class="reaction">
+						<td colspan="6"><span class="name">Reaction.</span> <span class="content">Content.</span></td>
+					</tr>
+					<tr id="legendaries">
+						<td colspan="6"><span>Legendary Actions</span></td>
+					</tr>
+					<tr class="legendary">
+						<td colspan="6"><span class="name">Action.</span> <span class="content">Content.</span></td>
+					</tr>
+					<tr>
+						<th class="border" colspan="6"></th>
+					</tr>
+				</table>
+				<div id="output"></div>
+				<br>
+				<button class="btn btn-block btn-default btn-xs" type="button" id="expandcollapse">Toggle Search</button>
 			</div>
-		</main>
-		<footer style="text-align: center;" class="container">
-			<small>Content tagged with "3pp" is third-party content from books such as Kobold Press' <em>Tome of Beasts</em>. Use at your own risk.</small>
-		</footer>
+		</div>
+	</main>
+	<footer style="text-align: center;" class="container">
+		<small>Content tagged with "3pp" is third-party content from books such as Kobold Press' <em>Tome of Beasts</em>. Use at your own risk.</small>
+	</footer>
 
 	<script type="text/javascript" src="js/page-bestiary.js"></script>
 	<script type="text/javascript" src="data/bestiary.json"></script>
@@ -459,4 +240,5 @@ tr td > p.spells ~ p.spells{
 
 
 </body>
+
 </html>

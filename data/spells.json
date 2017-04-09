@@ -3,6 +3,7 @@ var spelldata = {
         "spell": [
             {
                 "name": "Abi-Dalzim's Horrid Wilting",
+                "source": "EEPC",
                 "level": "8",
                 "school": "N",
                 "time": "1 action",
@@ -19,6 +20,7 @@ var spelldata = {
             },
             {
                 "name": "Absorb Elements",
+                "source": "EEPC",
                 "level": "1",
                 "school": "A",
                 "time": "1 reaction, which you take when you take acid, cold, fire, lightning, or thunder damage",
@@ -58,6 +60,7 @@ var spelldata = {
             },
             {
                 "name": "Aganazzar's Scorcher",
+                "source": "EEPC",
                 "level": "2",
                 "school": "EV",
                 "time": "1 action",
@@ -544,6 +547,7 @@ var spelldata = {
             },
             {
                 "name": "Beast Bond",
+                "source": "EEPC",
                 "level": "1",
                 "school": "D",
                 "time": "1 action",
@@ -749,6 +753,7 @@ var spelldata = {
             },
             {
                 "name": "Bones of the Earth",
+                "source": "EEPC",
                 "level": "6",
                 "school": "T",
                 "time": "1 action",
@@ -767,7 +772,8 @@ var spelldata = {
                 ]
             },
             {
-                "name": "Booming Blade (SCAG)",
+                "name": "Booming Blade",
+                "source": "SCAG",
                 "level": "0",
                 "school": "EV",
                 "time": "1 action",
@@ -777,7 +783,7 @@ var spelldata = {
                 "classes": "Sorcerer, Warlock, Wizard",
                 "text": [
                     "As part of the action used to cast this spell, you must make a melee attack with a weapon against one creature within the spell's range, otherwise the spell fails. On a hit, the target suffers the attack's normal effects, and it becomes sheathed in booming energy until the start of your next turn. If the target willingly moves before then, it immediately takes 1d8 thunder damage, and the spell ends.",
-                    "    This spell's damage increases when you reach higher levels. At 5th level, the melee attack deals an extra 1d8 thunder damage to the target, and the damage the target takes for moving increases to 2d8. Both damage rolls increase by 1d8 at 11th level and 17th level."
+                    "This spell's damage increases when you reach higher levels. At 5th level, the melee attack deals an extra 1d8 thunder damage to the target, and the damage the target takes for moving increases to 2d8. Both damage rolls increase by 1d8 at 11th level and 17th level."
                 ],
                 "roll": [
                     "1d8",
@@ -859,6 +865,7 @@ var spelldata = {
             },
             {
                 "name": "Catapult",
+                "source": "EEPC",
                 "level": "1",
                 "school": "T",
                 "time": "1 action",
@@ -1454,6 +1461,7 @@ var spelldata = {
             },
             {
                 "name": "Control Flames",
+                "source": "EEPC",
                 "level": "0",
                 "school": "T",
                 "time": "1 action",
@@ -1541,6 +1549,7 @@ var spelldata = {
             },
             {
                 "name": "Control Winds",
+                "source": "EEPC",
                 "level": "5",
                 "school": "T",
                 "time": "1 action",
@@ -1595,6 +1604,7 @@ var spelldata = {
             },
             {
                 "name": "Create Bonfire",
+                "source": "EEPC",
                 "level": "0",
                 "school": "C",
                 "time": "1 action",
@@ -2203,6 +2213,7 @@ var spelldata = {
             },
             {
                 "name": "Dust Devil",
+                "source": "EEPC",
                 "level": "2",
                 "school": "C",
                 "time": "1 action",
@@ -2225,6 +2236,7 @@ var spelldata = {
             },
             {
                 "name": "Earth Tremor",
+                "source": "EEPC",
                 "level": "1",
                 "school": "EV",
                 "time": "1 action",
@@ -2243,6 +2255,7 @@ var spelldata = {
             },
             {
                 "name": "Earthbind",
+                "source": "EEPC",
                 "level": "2",
                 "school": "T",
                 "time": "1 action",
@@ -2306,6 +2319,7 @@ var spelldata = {
             },
             {
                 "name": "Elemental Bane",
+                "source": "EEPC",
                 "level": "4",
                 "school": "T",
                 "time": "1 action",
@@ -2432,6 +2446,7 @@ var spelldata = {
             },
             {
                 "name": "Erupting Earth",
+                "source": "EEPC",
                 "level": "3",
                 "school": "T",
                 "time": "1 action",
@@ -2796,6 +2811,7 @@ var spelldata = {
             },
             {
                 "name": "Flame Arrows",
+                "source": "EEPC",
                 "level": "3",
                 "school": "T",
                 "time": "1 action",
@@ -3007,6 +3023,7 @@ var spelldata = {
             },
             {
                 "name": "Frostbite",
+                "source": "EEPC",
                 "level": "0",
                 "school": "EV",
                 "time": "1 action",
@@ -3253,7 +3270,8 @@ var spelldata = {
                 ]
             },
             {
-                "name": "Green-Flame Blade (SCAG)",
+                "name": "Green-Flame Blade",
+                "source": "SCAG",
                 "level": "0",
                 "school": "EV",
                 "time": "1 action",
@@ -3263,7 +3281,7 @@ var spelldata = {
                 "classes": "Sorcerer, Warlock, Wizard",
                 "text": [
                     "As part of the action used to cast this spell, you must make a melee attack with a weapon against one creature within the spell's range, otherwise the spell fails. On a hit, the target suffers the attack's normal effects, and green fire leaps from the target to a different creature of your choice that you can see within 5 feet of it. The second creature takes fire damage equal to your spellcasting ability modifier.",
-                    "    This spell's damage increases when you reach higher levels. At 5th level, the melee attack deals an extra 1d8 fire damage to the target, and the fire damage to the second creature increases to 1d8 + your spellcasting ability modifier. Both damage rolls increase by 1d8 at 11th level and 17th level."
+                    "This spell's damage increases when you reach higher levels. At 5th level, the melee attack deals an extra 1d8 fire damage to the target, and the fire damage to the second creature increases to 1d8 + your spellcasting ability modifier. Both damage rolls increase by 1d8 at 11th level and 17th level."
                 ],
                 "roll": [
                     "1d8",
@@ -3356,6 +3374,7 @@ var spelldata = {
             },
             {
                 "name": "Gust",
+                "source": "EEPC",
                 "level": "0",
                 "school": "T",
                 "time": "1 action",
@@ -3696,6 +3715,7 @@ var spelldata = {
             },
             {
                 "name": "Ice Knife",
+                "source": "EEPC",
                 "level": "1",
                 "school": "C",
                 "time": "1 action",
@@ -3771,6 +3791,7 @@ var spelldata = {
             },
             {
                 "name": "Immolation",
+                "source": "EEPC",
                 "level": "5",
                 "school": "EV",
                 "time": "1 action",
@@ -3888,6 +3909,7 @@ var spelldata = {
             },
             {
                 "name": "Investiture of Flame",
+                "source": "EEPC",
                 "level": "6",
                 "school": "T",
                 "time": "1 action",
@@ -3910,6 +3932,7 @@ var spelldata = {
             },
             {
                 "name": "Investiture of Ice",
+                "source": "EEPC",
                 "level": "6",
                 "school": "T",
                 "time": "1 action",
@@ -3933,6 +3956,7 @@ var spelldata = {
             },
             {
                 "name": "Investiture of Stone",
+                "source": "EEPC",
                 "level": "6",
                 "school": "T",
                 "time": "1 action",
@@ -3954,6 +3978,7 @@ var spelldata = {
             },
             {
                 "name": "Investiture of Wind",
+                "source": "EEPC",
                 "level": "6",
                 "school": "T",
                 "time": "1 action",
@@ -4152,7 +4177,8 @@ var spelldata = {
                 "roll": "8d6"
             },
             {
-                "name": "Lightning Lure (SCAG)",
+                "name": "Lightning Lure",
+                "source": "SCAG",
                 "level": "0",
                 "school": "EV",
                 "time": "1 action",
@@ -4162,7 +4188,7 @@ var spelldata = {
                 "classes": "Sorcerer, Warlock, Wizard",
                 "text": [
                     "You create a lash of lightning energy that strikes at one creature of your choice that you can see within range. The target must succeed on a Strength saving throw or be pulled up to 10 feet in a straight line toward you and then take 1d8 lightning damage if it is within 5 feet of you.",
-                    "    The spell's damage increases by 1d8 when you reach 5th level (2d8), 11th level (3d8), and 17th level (4d8)."
+                    "The spell's damage increases by 1d8 when you reach 5th level (2d8), 11th level (3d8), and 17th level (4d8)."
                 ],
                 "roll": [
                     "1d8",
@@ -4234,6 +4260,7 @@ var spelldata = {
             },
             {
                 "name": "Maelstrom",
+                "source": "EEPC",
                 "level": "5",
                 "school": "EV",
                 "time": "1 action",
@@ -4363,6 +4390,7 @@ var spelldata = {
             },
             {
                 "name": "Magic Stone",
+                "source": "EEPC",
                 "level": "0",
                 "school": "T",
                 "time": "1 bonus action",
@@ -4482,6 +4510,7 @@ var spelldata = {
             },
             {
                 "name": "Maximilian's Earthen Grasp",
+                "source": "EEPC",
                 "level": "2",
                 "school": "T",
                 "time": "1 action",
@@ -4560,6 +4589,7 @@ var spelldata = {
             },
             {
                 "name": "Melf's Minute Meteors",
+                "source": "EEPC",
                 "level": "3",
                 "school": "EV",
                 "time": "1 action",
@@ -4747,6 +4777,7 @@ var spelldata = {
             },
             {
                 "name": "Mold Earth",
+                "source": "EEPC",
                 "level": "0",
                 "school": "T",
                 "time": "1 action",
@@ -5129,7 +5160,7 @@ var spelldata = {
                 "range": "150 feet",
                 "components": "V, S",
                 "duration": "Instantaneous",
-                "classes": "Bard ,Cleric (Nature), Druid, Druid (Forest), Paladin (Ancients), Ranger, Warlock (Archfey)",
+                "classes": "Bard, Cleric (Nature), Druid, Druid (Forest), Paladin (Ancients), Ranger, Warlock (Archfey)",
                 "text": [
                     "This spell channels vitality into plants within a specific area. There are two possible uses for the spell, granting either immediate or long-term benefits.",
                     "",
@@ -5264,6 +5295,7 @@ var spelldata = {
             },
             {
                 "name": "Primordial Ward",
+                "source": "EEPC",
                 "level": "6",
                 "school": "A",
                 "time": "1 action",
@@ -5463,6 +5495,7 @@ var spelldata = {
             },
             {
                 "name": "Pyrotechnics",
+                "source": "EEPC",
                 "level": "2",
                 "school": "T",
                 "time": "1 action",
@@ -5884,6 +5917,7 @@ var spelldata = {
             },
             {
                 "name": "Shape Water",
+                "source": "EEPC",
                 "level": "0",
                 "school": "T",
                 "time": "1 action",
@@ -6052,6 +6086,7 @@ var spelldata = {
             },
             {
                 "name": "Skywrite",
+                "source": "EEPC",
                 "level": "2",
                 "school": "T",
                 "ritual": "YES",
@@ -6124,6 +6159,7 @@ var spelldata = {
             },
             {
                 "name": "Snilloc's Snowball Swarm",
+                "source": "EEPC",
                 "level": "2",
                 "school": "EV",
                 "time": "1 action",
@@ -6320,6 +6356,7 @@ var spelldata = {
             },
             {
                 "name": "Storm Sphere",
+                "source": "EEPC",
                 "level": "4",
                 "school": "EV",
                 "time": "1 action",
@@ -6443,7 +6480,8 @@ var spelldata = {
                 ]
             },
             {
-                "name": "Sword Burst (SCAG)",
+                "name": "Sword Burst",
+                "source": "SCAG",
                 "level": "0",
                 "school": "C",
                 "time": "1 action",
@@ -6453,7 +6491,7 @@ var spelldata = {
                 "classes": "Sorcerer, Warlock, Wizard",
                 "text": [
                     "You create a momentary circle of spectral blades that sweep around you. Each creature within range, other than you, must succeed on a Dexterity saving throw or take 1d6 force damage.",
-                    "    The spell's damage increases by 1d6 when you reach 5th level (2d6), 11th level (3d6), and 17th level (4d6)."
+                    "The spell's damage increases by 1d6 when you reach 5th level (2d6), 11th level (3d6), and 17th level (4d6)."
                 ],
                 "roll": [
                     "1d6",
@@ -6676,6 +6714,7 @@ var spelldata = {
             },
             {
                 "name": "Thunderclap",
+                "source": "EEPC",
                 "level": "0",
                 "school": "EV",
                 "time": "1 action",
@@ -6729,6 +6768,7 @@ var spelldata = {
             },
             {
                 "name": "Tidal Wave",
+                "source": "EEPC",
                 "level": "3",
                 "school": "C",
                 "time": "1 action",
@@ -6772,6 +6812,7 @@ var spelldata = {
             },
             {
                 "name": "Transmute Rock",
+                "source": "EEPC",
                 "level": "5",
                 "school": "T",
                 "time": "1 action",
@@ -6975,6 +7016,7 @@ var spelldata = {
             },
             {
                 "name": "Vitriolic Sphere",
+                "source": "EEPC",
                 "level": "4",
                 "school": "EV",
                 "time": "1 action",
@@ -7054,6 +7096,7 @@ var spelldata = {
             },
             {
                 "name": "Wall of Sand",
+                "source": "EEPC",
                 "level": "3",
                 "school": "EV",
                 "time": "1 action",
@@ -7112,6 +7155,7 @@ var spelldata = {
             },
             {
                 "name": "Wall of Water",
+                "source": "EEPC",
                 "level": "3",
                 "school": "EV",
                 "time": "1 action",
@@ -7144,6 +7188,7 @@ var spelldata = {
             },
             {
                 "name": "Warding Wind",
+                "source": "EEPC",
                 "level": "2",
                 "school": "EV",
                 "time": "1 action",
@@ -7199,6 +7244,7 @@ var spelldata = {
             },
             {
                 "name": "Watery Sphere",
+                "source": "EEPC",
                 "level": "4",
                 "school": "C",
                 "time": "1 action",
@@ -7256,6 +7302,7 @@ var spelldata = {
             },
             {
                 "name": "Whirlwind",
+                "source": "EEPC",
                 "level": "7",
                 "school": "EV",
                 "time": "1 action",
@@ -7702,6 +7749,7 @@ var spelldata = {
             },
             {
              "name": "Beacon",
+             "source": "UAMystic",
              "level": "PT",
              "classes": "Mystic",
              "text": [
@@ -7710,6 +7758,7 @@ var spelldata = {
             },
             {
              "name": "Blade Meld",
+             "source": "UAMystic",
              "level": "PT",
              "classes": "Mystic",
              "text": [
@@ -7718,6 +7767,7 @@ var spelldata = {
             },
             {
              "name": "Blind Spot",
+             "source": "UAMystic",
              "level": "PT",
              "classes": "Mystic",
              "text": [
@@ -7726,6 +7776,7 @@ var spelldata = {
             },
             {
              "name": "Delusion",
+             "source": "UAMystic",
              "level": "PT",
              "classes": "Mystic",
              "text": [
@@ -7736,6 +7787,7 @@ var spelldata = {
             },
             {
              "name": "Energy Beam",
+             "source": "UAMystic",
              "level": "PT",
              "classes": "Mystic",
              "text": [
@@ -7745,6 +7797,7 @@ var spelldata = {
             },
             {
              "name": "Light Step",
+             "source": "UAMystic",
              "level": "PT",
              "classes": "Mystic",
              "text": [
@@ -7753,6 +7806,7 @@ var spelldata = {
             },
             {
              "name": "Mind Meld",
+             "source": "UAMystic",
              "level": "PT",
              "classes": "Mystic",
              "text": [
@@ -7762,6 +7816,7 @@ var spelldata = {
             },
             {
              "name": "Mind Slam",
+             "source": "UAMystic",
              "level": "PT",
              "classes": "Mystic",
              "text": [
@@ -7771,6 +7826,7 @@ var spelldata = {
             },
             {
              "name": "Mind Thrust",
+             "source": "UAMystic",
              "level": "PT",
              "classes": "Mystic",
              "text": [
@@ -7780,6 +7836,7 @@ var spelldata = {
             },
             {
              "name": "Mystic Charm",
+             "source": "UAMystic",
              "level": "PT",
              "classes": "Mystic",
              "text": [
@@ -7788,6 +7845,7 @@ var spelldata = {
             },
             {
              "name": "Mystic Hand",
+             "source": "UAMystic",
              "level": "PT",
              "classes": "Mystic",
              "text": [
@@ -7798,6 +7856,7 @@ var spelldata = {
             },
             {
              "name": "Psychic Hammer",
+             "source": "UAMystic",
              "level": "PT",
              "classes": "Mystic",
              "text": [
@@ -7807,6 +7866,7 @@ var spelldata = {
             },
             {
              "name": "Crown of Despair",
+             "source": "UAMystic",
              "level": "PD",
              "classes": "Mystic, Mystic (Avatar)",
              "text": [
@@ -7820,6 +7880,7 @@ var spelldata = {
             },
             {
              "name": "Crown of Disgust",
+             "source": "UAMystic",
              "level": "PD",
              "classes": "Mystic, Mystic (Avatar)",
              "text": [
@@ -7833,6 +7894,7 @@ var spelldata = {
             },
             {
              "name": "Crown of Rage",
+             "source": "UAMystic",
              "level": "PD",
              "classes": "Mystic, Mystic (Avatar)",
              "text": [
@@ -7841,16 +7903,17 @@ var spelldata = {
               "Primal Fury (1–7 psi). As an action, choose one creature you can see within 60 feet of you. The target must succeed on a Charisma saving throw or take 1d6 psychic damage per psi point spent on this ability and immediately use its  reaction to move its speed in a straight line toward its nearest enemy. The save automatically succeeds if the target is immune to being charmed.",
               "Fighting Words (2 psi; conc., 10 min.). If you spend 1 minute conversing with a creature, you can attempt to leave a simmering violence in its mind. At the end of the minute, you can use an action to force the creature to make a Wisdom saving throw to resist feeling violent urges against one creature you describe to it or name. The save automatically succeeds if the target is immune to being charmed. On a failed save, the target attacks the chosen creature if it sees that creature before your concentration ends, using weapons or spells against a creature it was already hostile toward or unarmed strikes against an ally or a creature it was neutral toward. Once the fight starts, it continues to attack for 5 rounds before this effect ends. This effect immediately ends if the target or any ally it can see is attacked or takes damage from any creature other than the one it has been incited against. On a successful save, the creature is unaffected and has no inkling of your attempt to bend its will.",
               "Mindless Courage (2 psi). You cause a creature's bloodlust to overcome its sense of preservation. As a bonus action, choose one creature you can see within 60 feet of you. The target must succeed on a Wisdom saving throw or, until the end of your next turn, it can’t willingly move unless its movement brings it closer to its nearest enemy that it can see. The save automatically succeeds if the target is immune to being charmed.",
-              "Punishing Fury(5 psi; conc., 1 min.). You cause a creature's rage to grow so hot that it attacks without heeding its own safety. As a bonus action, choose one creature you can see within 60 feet of you. The target must succeed on a Wisdom saving throw or, until your concentration ends, any creature within 5 feet of it can use a reaction to make a melee attack against it whenever the target makes a melee attack. The save automatically succeeds if the target is immune to being charmed."
+              "Punishing Fury (5 psi; conc., 1 min.). You cause a creature's rage to grow so hot that it attacks without heeding its own safety. As a bonus action, choose one creature you can see within 60 feet of you. The target must succeed on a Wisdom saving throw or, until your concentration ends, any creature within 5 feet of it can use a reaction to make a melee attack against it whenever the target makes a melee attack. The save automatically succeeds if the target is immune to being charmed."
              ]
             },
             {
              "name": "Mantle of Command",
+             "source": "UAMystic",
              "level": "PD",
              "classes": "Mystic, Mystic (Avatar)",
              "text": [
               "You exert an aura of trust and authority, enhancing the coordination among your allies.",
-              "Psychic Focus. While focused on this discipline, when you end your turn and didn’t move during it, you can use your reaction to allow one ally you can se  within 30 feet of you to move up to half their speed, following a path of your choice. To move in this way, the ally mustn’t be incapacitated.",
+              "Psychic Focus. While focused on this discipline, when you end your turn and didn’t move during it, you can use your reaction to allow one ally you can see  within 30 feet of you to move up to half their speed, following a path of your choice. To move in this way, the ally mustn’t be incapacitated.",
               "Coordinated Movement (2 psi). As a bonus action, choose up to five allies you can see within 60 feet of you. Each of those allies can use their reaction to move up to half their speed, following a path of your choice.",
               "Commander’s Sight (2 psi; conc., 1 rnd.). As an action, choose one creature you can see within 60 feet of you. Until the start of your next turn, your allies have advantage on attack rolls against that target",
               "Command to Strike (3 psi). As an action, choose one ally you can see within 60 feet of you. That ally can use their reaction to immediately take the Attack action. You choose the targets.",
@@ -7860,6 +7923,7 @@ var spelldata = {
             },
             {
              "name": "Mantle of Courage",
+             "source": "UAMystic",
              "level": "PD",
              "classes": "Mystic, Mystic (Avatar)",
              "text": [
@@ -7872,6 +7936,7 @@ var spelldata = {
             },
             {
              "name": "Mantle of Fury",
+             "source": "UAMystic",
              "level": "PD",
              "classes": "Mystic, Mystic (Avatar)",
              "text": [
@@ -7885,6 +7950,7 @@ var spelldata = {
             },
             {
              "name": "Mantle of Fear",
+             "source": "UAMystic",
              "level": "PD",
              "classes": "Mystic, Mystic (Avatar)",
              "text": [
@@ -7897,6 +7963,7 @@ var spelldata = {
             },
             {
              "name": "Mantle of Joy",
+             "source": "UAMystic",
              "level": "PD",
              "classes": "Mystic, Mystic (Avatar)",
              "text": [
@@ -7910,7 +7977,8 @@ var spelldata = {
             },
             {
                 "name": "Mastery of Air",
-                "level": "PD",
+                "source": "UAMystic",
+             "level": "PD",
                 "classes": "Mystic, Mystic (Wu Jen)",
                 "text": [
                     "You become one with the power of elemental air.",
@@ -7925,7 +7993,8 @@ var spelldata = {
             },
             {
                 "name": "Mastery of Fire",
-                "level": "PD",
+                "source": "UAMystic",
+             "level": "PD",
                 "classes": "Mystic, Mystic (Wu Jen)",
                 "text": [
                     "You align your mind with the energy of elemental fire.",
@@ -7939,7 +8008,8 @@ var spelldata = {
             },
             {
                 "name": "Mastery of Force",
-                "level": "PD",
+                "source": "UAMystic",
+             "level": "PD",
                 "classes": "Mystic, Mystic (Wu Jen)",
                 "text": [
                     "As a student of psionic power, you perceive the potential energy that flows through all things. You reach out with your mind, transforming the potential into the actual. Objects and creatures move at your command.",
@@ -7964,7 +8034,8 @@ var spelldata = {
             },
             {
                 "name": "Mastery of Ice",
-                "level": "PD",
+                "source": "UAMystic",
+             "level": "PD",
                 "classes": "Mystic, Mystic (Wu Jen)",
                 "text": [
                     "You master the power of ice, shaping it to meet you demands.",
@@ -7980,7 +8051,8 @@ var spelldata = {
             },
             {
                 "name": "Mastery of Light and Darkness",
-                "level": "PD",
+                "source": "UAMystic",
+             "level": "PD",
                 "classes": "Mystic, Mystic (Wu Jen)",
                 "text": [
                     "You claim dominion over light and darkness with your mind.",
@@ -7994,7 +8066,8 @@ var spelldata = {
             },
             {
                 "name": "Mastery of Water",
-                "level": "PD",
+                "source": "UAMystic",
+             "level": "PD",
                 "classes": "Mystic, Mystic (Wu Jen)",
                 "text": [
                     "Your mind becomes one with elemental water, attuning your thoughts to its ebb and flow.",
@@ -8009,7 +8082,8 @@ var spelldata = {
             },
             {
                 "name": "Mastery of Weather",
-                "level": "PD",
+                "source": "UAMystic",
+             "level": "PD",
                 "classes": "Mystic, Mystic (Wu Jen)",
                 "text": [
                     "Your mind reaches into the sky, reshaping the stuff of storms to serve your needs.",
@@ -8026,7 +8100,8 @@ var spelldata = {
             },
             {
                 "name": "Mastery of Wood and Earth",
-                "level": "PD",
+                "source": "UAMystic",
+             "level": "PD",
                 "classes": "Mystic, Mystic (Wu Jen)",
                 "text": [
                     "You attune your mind to seize control of wood and earth.",
@@ -8041,7 +8116,8 @@ var spelldata = {
             },
             {
               "name": "Aura Sight",
-              "level": "PD",
+              "source": "UAMystic",
+             "level": "PD",
               "classes": "Mystic, Mystic (Awakened)",
               "text": [
                     "You refocus your sight to see the energy that surrounds all creatures. You perceive auras, energy signatures that can reveal key elements of a creature’s nature.",
@@ -8054,7 +8130,8 @@ var spelldata = {
             },
             {
               "name": "Intellect Fortress",
-              "level": "PD",
+              "source": "UAMystic",
+             "level": "PD",
               "classes": "Mystic, Mystic (Awakened)",
               "text": [
                     "You forge an indomitable wall of psionic energy around your mind—one that allows you to launch counterattacks against your opponents.",
@@ -8066,7 +8143,8 @@ var spelldata = {
             },
             {
               "name": "Mantle of Awe",
-              "level": "PD",
+              "source": "UAMystic",
+             "level": "PD",
               "classes": "Mystic, Mystic (Awakened)",
               "text": [
                       "You learn to use psionic energy to manipulate others with a subtle combination of psi and your own, natural charm",
@@ -8078,7 +8156,8 @@ var spelldata = {
             },
             {
               "name": "Precognition",
-              "level": "PD",
+              "source": "UAMystic",
+             "level": "PD",
               "classes": "Mystic, Mystic (Awakened)",
               "text": [
                       "By analyzing information around you, from subtle hints to seemingly disconnected facts, you learn to weave a string of probabilities in an instant that gives you extraordinary insights.",
@@ -8091,7 +8170,8 @@ var spelldata = {
             },
             {
               "name": "Psychic Assault",
-              "level": "PD",
+              "source": "UAMystic",
+             "level": "PD",
               "classes": "Mystic, Mystic (Awakened)",
               "text": [
                     "You wield your mind like a weapon, unleashing salvos of psionic energy.",
@@ -8105,7 +8185,8 @@ var spelldata = {
             },
             {
               "name": "Psychic Disruption",
-              "level": "PD",
+              "source": "UAMystic",
+             "level": "PD",
               "classes": "Mystic, Mystic (Awakened)",
               "text": [
                         "You create psychic static that disrupts other creatures’ ability to think clearly.",
@@ -8118,7 +8199,8 @@ var spelldata = {
             },
             {
               "name": "Psychic Inquisition",
-              "level": "PD",
+              "source": "UAMystic",
+             "level": "PD",
               "classes": "Mystic, Mystic (Awakened)",
               "text": [
                       "You reach into a creature’s mind to uncover information or plant ideas within it.",
@@ -8131,7 +8213,8 @@ var spelldata = {
             },
             {
               "name": "Psychic Phantoms",
-              "level": "PD",
+              "source": "UAMystic",
+             "level": "PD",
               "classes": "Mystic, Mystic (Awakened)",
               "text": [
                       "Your power reaches into a creature’s mind and causes it false perceptions",
@@ -8145,7 +8228,8 @@ var spelldata = {
             },
             {
               "name": "Telepathic Contact ",
-              "level": "PD",
+              "source": "UAMystic",
+             "level": "PD",
               "classes": "Mystic, Mystic (Awakened)",
               "text": [
                       "By channeling psionic power, you gain the ability to control other creatures by substituting your will for their own.",
@@ -8160,6 +8244,7 @@ var spelldata = {
             },
             {
               "name": "Adaptive Body",
+              "source": "UAMystic",
               "level":  "PD",
               "classes": "Mystic, Mystic (Immortal)",
               "text": [
@@ -8173,6 +8258,7 @@ var spelldata = {
             },
             {
               "name": "Bestial Form",
+              "source": "UAMystic",
               "level":  "PD",
               "classes": "Mystic, Mystic (Immortal)",
               "text": [
@@ -8191,6 +8277,7 @@ var spelldata = {
             },
             {
               "name": "Brute Force",
+              "source": "UAMystic",
               "level":  "PD",
               "classes": "Mystic, Mystic (Immortal)",
               "text": [
@@ -8204,6 +8291,7 @@ var spelldata = {
             },
             {
               "name": "Celerity",
+              "source": "UAMystic",
               "level":  "PD",
               "classes": "Mystic, Mystic (Immortal)",
               "text": [
@@ -8218,6 +8306,7 @@ var spelldata = {
             },
             {
               "name": "Corrosive Metabolism",
+              "source": "UAMystic",
               "level":  "PD",
               "classes": "Mystic, Mystic (Immortal)",
               "text": [
@@ -8232,6 +8321,7 @@ var spelldata = {
             },
             {
               "name": "Diminution",
+              "source": "UAMystic",
               "level":  "PD",
               "classes": "Mystic, Mystic (Immortal)",
               "text": [
@@ -8245,6 +8335,7 @@ var spelldata = {
             },
             {
               "name": "Giant Growth",
+              "source": "UAMystic",
               "level":  "PD",
               "classes": "Mystic, Mystic (Immortal)",
               "text": [
@@ -8256,6 +8347,7 @@ var spelldata = {
             },
             {
               "name": "Iron Durability",
+              "source": "UAMystic",
               "level":  "PD",
               "classes": "Mystic, Mystic (Immortal)",
               "text": [
@@ -8268,6 +8360,7 @@ var spelldata = {
             },
             {
               "name": "Psionic Restoration",
+              "source": "UAMystic",
               "level":  "PD",
               "classes": "Mystic, Mystic (Immortal)",
               "text": [
@@ -8281,7 +8374,8 @@ var spelldata = {
             },
             {
               "name": "Psionic Weapon",
-              "level": "PD",
+              "source": "UAMystic",
+             "level": "PD",
               "classes": "Mystic, Mystic (Immortal)",
               "text": [
                       "You have learned how to channel psionic energy into your attacks, lending them devastating power.",
@@ -8293,7 +8387,8 @@ var spelldata = {
             },
             {
               "name": "Nomadic Arrow",
-              "level": "PD",
+              "source": "UAMystic",
+             "level": "PD",
               "classes": "Mystic, Mystic (Nomad)",
               "text": [
                       "You imbue a ranged weapon with a strange semblance of sentience, allowing it to unerringly find its mark.",
@@ -8305,7 +8400,8 @@ var spelldata = {
             },
             {
               "name": "Nomadic Chameleon",
-              "level": "PD",
+              "source": "UAMystic",
+             "level": "PD",
               "classes": "Mystic, Mystic (Nomad)",
               "text": [
                       "You create a screen of psychic power that distorts your appearance, allowing you to blend into the background or even turn invisible.",
@@ -8317,7 +8413,8 @@ var spelldata = {
             },
             {
               "name": "Nomadic Mind",
-              "level": "PD",
+              "source": "UAMystic",
+             "level": "PD",
               "classes": "Mystic, Mystic (Nomad)",
               "text": [
                       "You dispatch part of your psyche into the noosphere, the collective vista of minds and knowledge possessed by living things.",
@@ -8332,7 +8429,8 @@ var spelldata = {
             },
             {
               "name": "Nomadic Step",
-              "level": "PD",
+              "source": "UAMystic",
+             "level": "PD",
               "classes": "Mystic, Mystic (Nomad)",
               "text": [
                       "You exert your mind on the area around you, twisting the intraplanar pathways you perceive to allow instantaneous travel.",
@@ -8349,7 +8447,8 @@ var spelldata = {
             },
             {
               "name": "Third Eye",
-              "level": "PD",
+              "source": "UAMystic",
+             "level": "PD",
               "classes": "Mystic, Mystic (Nomad)",
               "text": [
                       "You create a third, psychic eye in your mind, which you cast out into the world. It channels thoughts and knowledge back to you, greatly enhancing your senses.",
