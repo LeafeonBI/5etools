@@ -1,18 +1,20 @@
 "use strict";
 
-const JSON_URL = "data/spells.json";
+const JSON_DIR = "data/spells/";
+const JSON_LIST_NAME = "spell";
 
 // toss these into the "Tags" section to save screen space
 const META_ADD_CONC = "Concentration";
 const META_ADD_V = "Verbal";
 const META_ADD_S = "Somatic";
 const META_ADD_M = "Material";
+const META_ADD_M_COST = "Material with Cost";
 // real meta tags
 const META_RITUAL = "Ritual";
 const META_TECHNOMAGIC = "Technomagic";
 
 const P_LEVEL = "level";
-const P_NORMALISED_TIME= "normalisedTime";
+const P_NORMALISED_TIME = "normalisedTime";
 const P_SCHOOL = "school";
 const P_NORMALISED_RANGE = "normalisedRange";
 
@@ -28,7 +30,7 @@ const STR_FAV_SOUL_V2 = "Favored Soul v2 (UA)";
 const STR_FAV_SOUL_V3 = "Favored Soul v3 (UA)";
 
 const TM_ACTION = "action";
-const TM_B_ACTION = "bonus action";
+const TM_B_ACTION = "bonus";
 const TM_REACTION = "reaction";
 const TM_ROUND = "round";
 const TM_MINS = "minute";
@@ -43,18 +45,18 @@ TIME_UNITS_TO_FULL[TM_MINS] = "Minutes";
 TIME_UNITS_TO_FULL[TM_HRS] = "Hours";
 
 const F_RNG_POINT = "Point";
-const F_RNG_AREA = "Area";
+const F_RNG_SELF_AREA = "Self (Area)";
 const F_RNG_SELF = "Self";
 const F_RNG_TOUCH = "Touch";
 const F_RNG_SPECIAL = "Special";
 
 let tableDefault;
 
-function getFltrSpellLevelStr(level) {
+function getFltrSpellLevelStr (level) {
 	return level === 0 ? Parser.spLevelToFull(level) : Parser.spLevelToFull(level) + " level";
 }
 
-function getNormalisedTime(time) {
+function getNormalisedTime (time) {
 	const firstTime = time[0];
 	let multiplier = 1;
 	let offset = 0;
@@ -75,18 +77,19 @@ function getNormalisedTime(time) {
 			multiplier = 3600;
 			break;
 	}
-	if (time.length > 1) offset += 1;
+	if (time.length > 1) offset += 0.5;
 	return (multiplier * firstTime.number) + offset;
 }
 
 const INCHES_PER_FOOT = 12;
 const FEET_PER_MILE = 5280;
-function getNormalisedRange(range) {
+
+function getNormalisedRange (range) {
 	let multiplier = 1;
 	let distance = 0;
 	let offset = 0;
 
-	switch(range.type) {
+	switch (range.type) {
 		case RNG_SPECIAL:
 			return 1000000000;
 		case RNG_POINT:
@@ -121,7 +124,7 @@ function getNormalisedRange(range) {
 	// value in inches, to allow greater granularity
 	return (multiplier * distance) + offset;
 
-	function adjustForDistance() {
+	function adjustForDistance () {
 		const dist = range.distance;
 		switch (dist.type) {
 			case UNT_FEET:
@@ -129,7 +132,7 @@ function getNormalisedRange(range) {
 				distance = dist.amount;
 				break;
 			case UNT_MILES:
-				multiplier = INCHES_PER_FOOT*FEET_PER_MILE;
+				multiplier = INCHES_PER_FOOT * FEET_PER_MILE;
 				distance = dist.amount;
 				break;
 			case RNG_SELF:
@@ -139,7 +142,7 @@ function getNormalisedRange(range) {
 				distance = 1;
 				break;
 			case RNG_SIGHT:
-				multiplier = FEET_PER_MILE*FEET_PER_MILE;
+				multiplier = FEET_PER_MILE * FEET_PER_MILE;
 				distance = 12; // assume sight range of person ~100 ft. above the ground
 				break;
 			case RNG_UNLIMITED_SAME_PLANE: // from BolS, if/when it gets restored
@@ -152,8 +155,8 @@ function getNormalisedRange(range) {
 	}
 }
 
-function getRangeType(range) {
-	switch(range.type) {
+function getRangeType (range) {
+	switch (range.type) {
 		case RNG_SPECIAL:
 			return F_RNG_SPECIAL;
 		case RNG_POINT:
@@ -171,32 +174,26 @@ function getRangeType(range) {
 		case RNG_HEMISPHERE:
 		case RNG_SPHERE:
 		case RNG_CUBE:
-			return F_RNG_AREA
+			return F_RNG_SELF_AREA
 	}
 }
 
-function getTblTimeStr(time) {
-	if (time.number === 1 && TO_HIDE_SINGLETON_TIMES.includes(time.unit)) {
-		return time.unit.uppercaseFirst();
-	} else {
-		return Parser.getTimeToFull(time);
-	}
+function getTblTimeStr (time) {
+	return (time.number === 1 && TO_HIDE_SINGLETON_TIMES.includes(time.unit))
+		? `${time.unit.uppercaseFirst()}${time.unit === TM_B_ACTION ? " acn." : ""}`
+		: `${time.number} ${time.unit === TM_B_ACTION ? "Bonus acn." : time.unit}${time.number > 1 ? "s" : ""}`.uppercaseFirst();
 }
 
-function getTimeDisplay(timeUnit) {
+function getTimeDisplay (timeUnit) {
 	return TIME_UNITS_TO_FULL[timeUnit];
 }
 
-function getClassFilterStr(c) {
+function getClassFilterStr (c) {
 	const nm = c.name.split("(")[0].trim();
 	return `${nm}${c.source !== SRC_PHB ? ` (${Parser.sourceJsonToAbv(c.source)})` : ""}`;
 }
 
-function selNotUaEepc(val) {
-	return val !== SRC_EEPC && !val.startsWith(SRC_UA_PREFIX);
-}
-
-function getMetaFilterObj(s) {
+function getMetaFilterObj (s) {
 	const out = [];
 	if (s.meta && s.meta.ritual) out.push(META_RITUAL);
 	if (s.meta && s.meta.technomagic) out.push(META_TECHNOMAGIC);
@@ -204,66 +201,225 @@ function getMetaFilterObj(s) {
 	if (s.components.v) out.push(META_ADD_V);
 	if (s.components.s) out.push(META_ADD_S);
 	if (s.components.m) out.push(META_ADD_M);
+	if (s.components.m && s.components.m.cost) out.push(META_ADD_M_COST);
 	return out;
 }
 
-window.onload = function load() {
-	loadJSON(JSON_URL, onJsonLoad);
+function getFilterAbilitySave (ability) {
+	return `${ability.uppercaseFirst().substring(0, 3)}. Save`;
+}
+
+function getFilterAbilityCheck (ability) {
+	return `${ability.uppercaseFirst().substring(0, 3)}. Check`;
+}
+
+function handleBrew (homebrew) {
+	addSpells(homebrew.spell);
+}
+
+window.onload = function load () {
+	ExcludeUtil.initialise();
+	multisourceLoad(JSON_DIR, JSON_LIST_NAME, pageInit, addSpells, () => {
+		BrewUtil.addBrewData(handleBrew);
+		BrewUtil.makeBrewButton("manage-brew");
+		BrewUtil.bind({list, filterBox, sourceFilter});
+	});
 };
 
-let spellList;
-function onJsonLoad(data) {
-	tableDefault = $("#stats").html();
+let list;
+let spellBookView;
+const sourceFilter = getSourceFilter();
+const levelFilter = new Filter({
+	header: "Level",
+	items: [
+		0, 1, 2, 3, 4, 5, 6, 7, 8, 9
+	],
+	displayFn: getFltrSpellLevelStr
+});
+const classFilter = new Filter({header: "Class"});
+const subclassFilter = new Filter({header: "Subclass"});
+const classAndSubclassFilter = new MultiFilter("Classes", classFilter, subclassFilter);
+const metaFilter = new Filter({
+	header: "Components/Miscellaneous",
+	items: [META_ADD_CONC, META_ADD_V, META_ADD_S, META_ADD_M, META_ADD_M_COST, META_RITUAL, META_TECHNOMAGIC]
+});
+const schoolFilter = new Filter({
+	header: "School",
+	items: [
+		SKL_ABV_ABJ,
+		SKL_ABV_CON,
+		SKL_ABV_DIV,
+		SKL_ABV_ENC,
+		SKL_ABV_EVO,
+		SKL_ABV_ILL,
+		SKL_ABV_NEC,
+		SKL_ABV_TRA
+	],
+	displayFn: Parser.spSchoolAbvToFull}
+);
+const damageFilter = new Filter({
+	header: "Damage Type",
+	items: [
+		"acid", "bludgeoning", "cold", "fire", "force", "lightning", "necrotic", "piercing", "poison", "psychic", "radiant", "slashing", "thunder"
+	],
+	displayFn: StrUtil.uppercaseFirst
+});
+const saveFilter = new Filter({
+	header: "Saving Throw",
+	items: ["strength", "constitution", "dexterity", "intelligence", "wisdom", "charisma"],
+	displayFn: getFilterAbilitySave
+});
+const checkFilter = new Filter({
+	header: "Opposed Ability Check",
+	items: ["strength", "constitution", "dexterity", "intelligence", "wisdom", "charisma"],
+	displayFn: getFilterAbilityCheck
+});
+const timeFilter = new Filter({
+	header: "Cast Time",
+	items: [
+		TM_ACTION,
+		TM_B_ACTION,
+		TM_REACTION,
+		TM_ROUND,
+		TM_MINS,
+		TM_HRS
+	],
+	displayFn: getTimeDisplay
+});
+const rangeFilter = new Filter({
+	header: "Range",
+	items: [
+		F_RNG_SELF,
+		F_RNG_TOUCH,
+		F_RNG_POINT,
+		F_RNG_SELF_AREA,
+		F_RNG_SPECIAL
+	]
+});
+const filterBox = initFilterBox(
+	sourceFilter,
+	levelFilter,
+	classAndSubclassFilter,
+	metaFilter,
+	schoolFilter,
+	damageFilter,
+	saveFilter,
+	checkFilter,
+	timeFilter,
+	rangeFilter
+);
 
-	spellList = data.spell;
+function pageInit (loadedSources) {
+	tableDefault = $("#pagecontent").html();
 
-	const sourceFilter = getSourceFilter({selFn: selNotUaEepc});
-	const levelFilter = new Filter({header: "Level", displayFn: getFltrSpellLevelStr});
-	const classFilter = new Filter({header: "Class"});
-	const subclassFilter = new Filter({header: "Subclass"});
-	const metaFilter = new Filter({
-		header: "Tag",
-		items: [META_ADD_CONC, META_ADD_V, META_ADD_S, META_ADD_M, META_RITUAL, META_TECHNOMAGIC]
+	sourceFilter.items = Object.keys(loadedSources).map(src => new FilterItem(src, loadSource(JSON_LIST_NAME, addSpells)));
+	sourceFilter.items.sort(SortUtil.ascSort);
+
+	list = ListUtil.search({
+		valueNames: ["name", "source", "level", "time", "school", "range", "classes", "uniqueid"],
+		listClass: "spells"
 	});
-	const schoolFilter = new Filter({header: "School", displayFn: Parser.spSchoolAbvToFull});
-	const timeFilter = new Filter({
-		header: "Cast Time",
-		items: [
-			TM_ACTION,
-			TM_B_ACTION,
-			TM_REACTION,
-			TM_ROUND,
-			TM_MINS,
-			TM_HRS
-		],
-		displayFn: getTimeDisplay
-	});
-	const rangeFilter = new Filter({
-		header: "Range",
-		items: [
-			F_RNG_SELF,
-			F_RNG_TOUCH,
-			F_RNG_POINT,
-			F_RNG_AREA,
-			F_RNG_SPECIAL
-		]
+	list.on("updated", () => {
+		filterBox.setCount(list.visibleItems.length, list.items.length);
 	});
 
-	const filterBox = initFilterBox(
-		sourceFilter,
-		levelFilter,
-		classFilter,
-		subclassFilter,
-		metaFilter,
-		schoolFilter,
-		timeFilter,
-		rangeFilter
+	// filtering function
+	$(filterBox).on(
+		FilterBox.EVNT_VALCHANGE,
+		handleFilterChange
 	);
+
+	$("#filtertools").find("button.sort").on(EVNT_CLICK, function () {
+		const $this = $(this);
+		if ($this.attr("sortby") === "asc") {
+			$this.attr("sortby", "desc");
+		} else $this.attr("sortby", "asc");
+		list.sort($this.data("sort"), {order: $this.attr("sortby"), sortFunction: sortSpells});
+	});
+
+	const subList = ListUtil.initSublist({
+		valueNames: ["name", "level", "time", "school", "range", "id"],
+		listClass: "subspells",
+		sortFunction: sortSpells
+	});
+	ListUtil.initGenericPinnable();
+
+	spellBookView = new BookModeView("bookview", $(`#btn-spellbook`), "Please pin some spells first",
+		($tbl) => {
+			const toShow = ListUtil.getSublistedIds().map(id => spellList[id]);
+			let numShown = 0;
+			const stack = [];
+			for (let i = 0; i < 10; ++i) {
+				const atLvl = toShow.filter(sp => sp.level === i);
+				if (atLvl.length) {
+					const levelText = i === 0 ? `${Parser.spLevelToFull(i)}s` : `${Parser.spLevelToFull(i)}-level Spells`;
+					stack.push(EntryRenderer.utils.getBorderTr(`<span class="spacer-name">${levelText}</span>`));
+
+					stack.push(`<tr class="spellbook-level"><td>`);
+					atLvl.forEach(sp => {
+						stack.push(`<table class="spellbook-entry"><tbody>`);
+						stack.push(EntryRenderer.spell.getCompactRenderedString(sp));
+						stack.push(`</tbody></table>`);
+					});
+					stack.push(`</td></tr>`);
+				}
+				numShown += atLvl.length;
+			}
+			$tbl.append(stack.join(""));
+			return numShown;
+		}
+	);
+}
+
+function getSublistItem (spell, pinId) {
+	return `
+		<li class="row" ${FLTR_ID}="${pinId}" oncontextmenu="ListUtil.openSubContextMenu(event, this)">
+			<a href="#${UrlUtil.autoEncodeHash(spell)}" title="${spell.name}">
+				<span class="name col-xs-3 col-xs-3-9">${spell.name}</span>
+				<span class="level col-xs-1 col-xs-1-5">${Parser.spLevelToFull(spell.level)}</span>
+				<span class="time col-xs-1 col-xs-1-8">${getTblTimeStr(spell.time[0])}</span>
+				<span class="school col-xs-1 col-xs-1-2 school_${spell.school}" title="${Parser.spSchoolAbvToFull(spell.school)}">${Parser.spSchoolAbvToShort(spell.school)}</span>
+				<span class="range col-xs-3 col-xs-3-6">${Parser.spRangeToFull(spell.range)}</span>		
+				<span class="id hidden">${pinId}</span>				
+			</a>
+		</li>
+	`;
+}
+
+function handleFilterChange () {
+	const f = filterBox.getValues();
+	list.filter(item => {
+		const s = spellList[$(item.elm).attr(FLTR_ID)];
+		return filterBox.toDisplay(
+			f,
+			s.source,
+			s.level,
+			[s._fClasses, s._fSubclasses],
+			s._fMeta,
+			s.school,
+			s.damageInflict,
+			s.savingThrow,
+			s.opposedCheck,
+			s._fTimeType,
+			s._fRangeType
+		);
+	});
+	onFilterChangeMulti(spellList);
+}
+
+let spellList = [];
+let spI = 0;
+
+function addSpells (data) {
+	if (!data || !data.length) return;
+
+	spellList = spellList.concat(data);
 
 	const spellTable = $("ul.spells");
 	let tempString = "";
-	for (let i = 0; i < spellList.length; i++) {
-		const spell = spellList[i];
+	for (; spI < spellList.length; spI++) {
+		const spell = spellList[spI];
+		if (ExcludeUtil.isExcluded(spell.name, "spell", spell.source)) continue;
 
 		let levelText = Parser.spLevelToFull(spell.level);
 		if (spell.meta && spell.meta.ritual) levelText += " (rit.)";
@@ -307,6 +463,7 @@ function onJsonLoad(data) {
 		spell[P_NORMALISED_RANGE] = getNormalisedRange(spell.range);
 
 		// used for filtering
+		if (!spell.damageInflict) spell.damageInflict = [];
 		spell._fMeta = getMetaFilterObj(spell);
 		spell._fClasses = spell.classes.fromClassList.map(c => getClassFilterStr(c));
 		spell._fSubclasses = spell.classes.fromSubclass ? spell.classes.fromSubclass.map(c => getClassFilterStr(c.subclass)) : [];
@@ -315,78 +472,73 @@ function onJsonLoad(data) {
 
 		// populate table
 		tempString += `
-			<li class='row' ${FLTR_ID}="${i}">
-				<a id='${i}' href='#${encodeForHash([spell.name, spell.source])}' title="${spell.name}">
-					<span class='name col-xs-3 col-xs-3-5'>${spell.name}</span>
-					<span class='source col-xs-1 source${spell.source}' title="${Parser.sourceJsonToFull(spell.source)}">${Parser.sourceJsonToAbv(spell.source)}</span>
-					<span class='level col-xs-1 col-xs-1-7'>${levelText}</span>
-					<span class='time col-xs-1 col-xs-1-7' title="${Parser.spTimeListToFull(spell.time)}">${getTblTimeStr(spell.time[0])}</span>
-					<span class='school col-xs-1 col-xs-1-7 school_${spell.school}' title="${Parser.spSchoolAbvToFull(spell.school)}">${Parser.spSchoolAbvToFull(spell.school)}</span>
-					<span class='range col-xs-2 col-xs-2-4'>${Parser.spRangeToFull(spell.range)}</span>
-					
-					<span class='classes' style='display: none'>${Parser.spClassesToFull(spell.classes)}</span>
+			<li class="row" ${FLTR_ID}="${spI}" onclick="ListUtil.toggleSelected(event, this)" oncontextmenu="ListUtil.openContextMenu(event, this)">
+				<a id="${spI}" href="#${UrlUtil.autoEncodeHash(spell)}" title="${spell.name}">
+					<span class="name col-xs-3 col-xs-3-5">${spell.name}</span>
+					<span class="source col-xs-1 col-xs-1-7 source${Parser.stringToCasedSlug(spell.source)}" title="${Parser.sourceJsonToFull(spell.source)}">${Parser.sourceJsonToAbv(spell.source)}</span>
+					<span class="level col-xs-1 col-xs-1-5">${levelText}</span>
+					<span class="time col-xs-1 col-xs-1-7">${getTblTimeStr(spell.time[0])}</span>
+					<span class="school col-xs-1 col-xs-1-2 school_${spell.school}" title="${Parser.spSchoolAbvToFull(spell.school)}">${Parser.spSchoolAbvToShort(spell.school)}</span>
+					<span class="range col-xs-2 col-xs-2-4">${Parser.spRangeToFull(spell.range)}</span>
+
+					<span class="classes" style="display: none">${Parser.spClassesToFull(spell.classes, true)}</span>
+					<span class="uniqueid hidden">${spell.uniqueId ? spell.uniqueId : spI}</span>
 				</a>
 			</li>`;
 
 		// populate filters
-		sourceFilter.addIfAbsent(spell.source);
-		levelFilter.addIfAbsent(spell.level);
-		schoolFilter.addIfAbsent(spell.school);
+		sourceFilter.addIfAbsent(new FilterItem(spell.source, () => {}));
 		spell._fClasses.forEach(c => classFilter.addIfAbsent(c));
 		spell._fSubclasses.forEach(sc => subclassFilter.addIfAbsent(sc));
 	}
-
+	const lastSearch = ListUtil.getSearchTermAndReset(list);
 	spellTable.append(tempString);
 
 	// sort filters
-	sourceFilter.items.sort(ascSort);
-	levelFilter.items.sort(ascSortSpellLevel);
-	schoolFilter.items.sort(ascSort);
-	classFilter.items.sort(ascSort);
-	subclassFilter.items.sort(ascSort);
+	sourceFilter.items.sort(SortUtil.ascSort);
+	classFilter.items.sort(SortUtil.ascSort);
+	subclassFilter.items.sort(SortUtil.ascSort);
 
-	function ascSortSpellLevel(a, b) {
-		if (a === b) return 0;
-		if (a === STR_CANTRIP) return -1;
-		if (b === STR_CANTRIP) return 1;
-		return ascSort(a, b);
-	}
-
-	const list = search({
-		valueNames: ["name", "source", "level", "time", "school", "range", "classes"],
-		listClass: "spells"
-	});
-
+	list.reIndex();
+	if (lastSearch) list.search(lastSearch);
+	list.sort("name");
 	filterBox.render();
-
-	// filtering function
-	$(filterBox).on(
-		FilterBox.EVNT_VALCHANGE,
-		handleFilterChange
-	);
-
-	function handleFilterChange() {
-		list.filter(function(item) {
-			const f = filterBox.getValues();
-			const s = spellList[$(item.elm).attr(FLTR_ID)];
-
-			return sourceFilter.toDisplay(f, s.source) && levelFilter.toDisplay(f, s.level) && metaFilter.toDisplay(f, s._fMeta) && schoolFilter.toDisplay(f, s.school) && timeFilter.toDisplay(f, s._fTimeType) && rangeFilter.toDisplay(f, s._fRangeType) && classFilter.toDisplay(f, s._fClasses) && subclassFilter.toDisplay(f, s._fSubclasses);
-		});
-	}
-
-	$("#filtertools").find("button.sort").on(EVNT_CLICK, function() {
-		const $this = $(this);
-		if ($this.attr("sortby") === "asc") {
-			$this.attr("sortby", "desc");
-		} else $this.attr("sortby", "asc");
-		list.sort($this.data("sort"), { order: $this.attr("sortby"), sortFunction: sortSpells });
-	});
-
-	initHistory();
 	handleFilterChange();
+
+	ListUtil.setOptions({
+		itemList: spellList,
+		getSublistRow: getSublistItem,
+		primaryLists: [list]
+	});
+	ListUtil.bindPinButton();
+	EntryRenderer.hover.bindPopoutButton(spellList);
+	UrlUtil.bindLinkExportButton(filterBox);
+	ListUtil.bindDownloadButton();
+	ListUtil.bindUploadButton(sublistFuncPreload);
+	ListUtil.loadState();
 }
 
-function sortSpells(a, b, o) {
+function sublistFuncPreload (json, funcOnload) {
+	const loaded = Object.keys(loadedSources).filter(it => loadedSources[it].loaded);
+	const lowerSources = json.sources.map(it => it.toLowerCase());
+	const toLoad = Object.keys(loadedSources).filter(it => !loaded.includes(it)).filter(it => lowerSources.includes(it.toLowerCase()));
+	const loadTotal = toLoad.length;
+	if (loadTotal) {
+		let loadCount = 0;
+		toLoad.forEach(src => {
+			loadSource(JSON_LIST_NAME, (spells) => {
+				addSpells(spells);
+				if (++loadCount === loadTotal) {
+					funcOnload();
+				}
+			})(src, "yes");
+		});
+	} else {
+		funcOnload();
+	}
+}
+
+function sortSpells (a, b, o) {
 	a = spellList[a.elm.getAttribute(FLTR_ID)];
 	b = spellList[b.elm.getAttribute(FLTR_ID)];
 
@@ -395,39 +547,42 @@ function sortSpells(a, b, o) {
 	}
 
 	if (o.valueName === "source") {
-		const bySrc = ascSort(a.source, b.source);
-		return bySrc !== 0 ? bySrc : ascSort(a.name, b.name);
+		const bySrc = SortUtil.ascSort(a.source, b.source);
+		return bySrc !== 0 ? bySrc : SortUtil.ascSort(a.name, b.name);
 	}
 
 	if (o.valueName === "level") {
-		return orFallback(ascSort, P_LEVEL);
+		return orFallback(SortUtil.ascSort, P_LEVEL);
 	}
 
 	if (o.valueName === "time") {
-		return orFallback(ascSort, P_NORMALISED_TIME);
+		return orFallback(SortUtil.ascSort, P_NORMALISED_TIME);
 	}
 
 	if (o.valueName === "school") {
-		return orFallback(ascSort, P_SCHOOL);
+		return orFallback(SortUtil.ascSort, P_SCHOOL);
 	}
 
 	if (o.valueName === "range") {
-		return orFallback(ascSort, P_NORMALISED_RANGE);
+		return orFallback(SortUtil.ascSort, P_NORMALISED_RANGE);
 	}
 
 	return 0;
 
-	function byName() {
-		return ascSort(a.name, b.name);
+	function byName () {
+		return SortUtil.ascSort(a.name, b.name);
 	}
-	function bySource() {
-		return ascSort(a.source, b.source);
+
+	function bySource () {
+		return SortUtil.ascSort(a.source, b.source);
 	}
-	function fallback() {
+
+	function fallback () {
 		const onName = byName();
 		return onName !== 0 ? onName : bySource();
 	}
-	function orFallback(func, prop) {
+
+	function orFallback (func, prop) {
 		const initial = func(a[prop], b[prop]);
 		return initial !== 0 ? initial : fallback();
 	}
@@ -435,55 +590,29 @@ function sortSpells(a, b, o) {
 
 const renderer = new EntryRenderer();
 function loadhash (id) {
-	$("#stats").html(tableDefault);
+	const $pageContent = $("#pagecontent").empty();
 	const spell = spellList[id];
+	$pageContent.append(EntryRenderer.spell.getRenderedString(spell, renderer));
+	loadsub([]);
+}
 
-	const renderStack = [];
-
-	renderStack.push(`<tr><th id="name" colspan="6"><span class="stats-name">${spell.name}</span><span class="stats-source source${spell.source}" title="${Parser.sourceJsonToFull(spell.source)}">${Parser.sourceJsonToAbv(spell.source)}</span></th></tr>`);
-
-	renderStack.push(`<tr><td id="levelschoolritual" colspan="6"><span>${Parser.spLevelSchoolMetaToFull(spell.level, spell.school, spell.meta)}</span></td></tr>`);
-
-	renderStack.push(`<tr><td id="castingtime" colspan="6"><span class="bold">Casting Time: </span>${Parser.spTimeListToFull(spell.time)}</td></tr>`);
-
-	renderStack.push(`<tr><td id="range" colspan="6"><span class="bold">Range: </span>${Parser.spRangeToFull(spell.range)}</td></tr>`);
-
-	renderStack.push(`<tr><td id="components" colspan="6"><span class="bold">Components: </span>${Parser.spComponentsToFull(spell.components)}</td></tr>`);
-
-	renderStack.push(`<tr><td id="range" colspan="6"><span class="bold">Duration: </span>${Parser.spDurationToFull(spell.duration)}</td></tr>`);
-
-	renderStack.push(`<tr id="text"><td class="divider" colspan="6"><div></div></td></tr>`);
-
-	const entryList = {type: "entries", entries: spell.entries};
-
-	renderStack.push(`<tr class='text'><td colspan='6' class='text'>`);
-	renderer.recursiveEntryRender(entryList, renderStack, 1);
-
-	if (spell.entriesHigherLevel) {
-		const higherLevelsEntryList = {type: "entries", entries: spell.entriesHigherLevel};
-		renderer.recursiveEntryRender(higherLevelsEntryList, renderStack, 2);
+function handleUnknownHash (link, sub) {
+	const src = Object.keys(loadedSources).find(src => src.toLowerCase() === decodeURIComponent(link.split(HASH_LIST_SEP)[1]).toLowerCase());
+	if (src) {
+		loadSource(JSON_LIST_NAME, (spells) => {
+			addSpells(spells);
+			History.hashChange();
+		})(src, "yes");
+	} else {
+		History._freshLoad();
 	}
+}
 
-	renderStack.push(`</td></tr>`);
+function loadsub (sub) {
+	filterBox.setFromSubHashes(sub);
+	ListUtil.setFromSubHashes(sub, sublistFuncPreload);
 
-	renderStack.push(`<tr class="text"><td id="classes" colspan="6"><span class="bold">Classes: </span>${Parser.spMainClassesToFull(spell.classes)}</td></tr>`);
-
-	if (spell.classes.fromSubclass) {
-		const currentAndLegacy = Parser.spSubclassesToCurrentAndLegacyFull(spell.classes);
-		renderStack.push(`<tr class="text"><td colspan="6"><span class="bold">Subclasses: </span>${currentAndLegacy[0]}</td></tr>`);
-		if (currentAndLegacy[1]) {
-			renderStack.push(`<tr class="text"><td colspan="6"><section class="text-muted"><span class="bold">Subclasses (legacy): </span>${currentAndLegacy[1]}</section></td></tr>`);
-		}
-	}
-
-	if (spell.scrollNote) {
-		renderStack.push(`<tr class="text"><td colspan="6"><section class="text-muted">`);
-		renderer.recursiveEntryRender(
-			`{@italic Note: Both the {@class ${STR_FIGHTER} (${STR_ELD_KNIGHT})} and the {@class ${STR_ROGUE} (${STR_ARC_TCKER})} spell lists include all {@class ${STR_WIZARD}} spells. Spells of 5th level or higher may be cast with the aid of a spell scroll or similar.}`
-			, renderStack, 2);
-		renderStack.push(`</section></td></tr>`);
-	}
-
-	const topBorder = $("#topBorder");
-	topBorder.after(renderStack.join(""));
+	const bookViewHash = sub.find(it => it.startsWith(spellBookView.hashKey));
+	if (bookViewHash && UrlUtil.unpackSubHash(bookViewHash)[spellBookView.hashKey][0] === "true") spellBookView.open();
+	else spellBookView.teardown();
 }

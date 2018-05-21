@@ -1,8 +1,17 @@
 {
 	"$schema": "http://json-schema.org/draft-06/schema#",
+	"version": "1.0.0",
 	"title": "RulesArray",
-	"type": "array",
 
+	"type": "object",
+	"properties": {
+		"variantrule": {
+			"type": "array",
+			"items": {"$ref": "#/definitions/variantrule"}
+		}
+	},
+	"additionalProperties": false,
+	"required": ["variantrule"],
 	"definitions": {
 		"variantrule": {
 			"properties": {
@@ -20,6 +29,9 @@
 				},
 				"source": {
 					"type": "string"
+				},
+				"page": {
+					"type": "integer"
 				}
 			},
 			"required": [
@@ -29,7 +41,5 @@
 			],
 			"additionalProperties": false
 		}
-	},
-
-	"items": {"$ref": "#/definitions/variantrule"}
+	}
 }

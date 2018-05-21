@@ -2,57 +2,33 @@
 
 const JSON_URL = "data/rewards.json";
 
-let tableDefault;
-let rewardList;
-
-window.onload = function load() {
-	loadJSON(JSON_URL, onJsonLoad);
+window.onload = function load () {
+	ExcludeUtil.initialise();
+	DataUtil.loadJSON(JSON_URL, onJsonLoad);
 };
 
-function onJsonLoad(data) {
-	tableDefault = $("#stats").html();
-	rewardList = data.reward;
-
-	const sourceFilter = getSourceFilter();
+let list;
+const sourceFilter = getSourceFilter();
+let filterBox;
+function onJsonLoad (data) {
 	const typeFilter = new Filter({
 		header: "Type",
 		items: [
 			"Blessing",
 			"Boon",
-			"Charm",
-			"Demonic Boon"
+			"Charm"
 		]
 	});
 
-	const filterBox = initFilterBox(sourceFilter, typeFilter);
+	filterBox = initFilterBox(sourceFilter, typeFilter);
 
-	let tempString = "";
-	for (let i = 0; i < rewardList.length; i++) {
-		const reward = rewardList[i];
-		const displayName = reward.type === "Demonic Boon" ? "Demonic Boon: " + reward.name : reward.name;
-
-		tempString += `
-			<li class='row' ${FLTR_ID}='${i}'>
-				<a id='${i}' href='#${encodeURIComponent(reward.name).toLowerCase().replace("'","%27")}' title='${reward.name}'>
-					<span class='name col-xs-10'>${displayName}</span>
-					<span class='source col-xs-2 source${Parser.sourceJsonToAbv(reward.source)}' title='${Parser.sourceJsonToFull(reward.source)}'>${Parser.sourceJsonToAbv(reward.source)}</span>
-				</a>
-			</li>`;
-
-		// populate filters
-		sourceFilter.addIfAbsent(reward.source);
-	}
-	$("ul.rewards").append(tempString);
-
-	// sort filters
-	sourceFilter.items.sort(ascSort);
-
-	const list = search({
+	list = ListUtil.search({
 		valueNames: ["name", "source"],
 		listClass: "rewards"
 	});
-
-	filterBox.render();
+	list.on("updated", () => {
+		filterBox.setCount(list.visibleItems.length, list.items.length);
+	});
 
 	// filtering function
 	$(filterBox).on(
@@ -60,34 +36,108 @@ function onJsonLoad(data) {
 		handleFilterChange
 	);
 
-	function handleFilterChange() {
-		list.filter(function(item) {
-			const f = filterBox.getValues();
-			const r = rewardList[$(item.elm).attr(FLTR_ID)];
+	const subList = ListUtil.initSublist({
+		valueNames: ["name", "id"],
+		listClass: "subrewards",
+		getSublistRow: getSublistItem
+	});
 
-			return sourceFilter.toDisplay(f, r.source) && typeFilter.toDisplay(f, r.type);
-		});
-	}
+	addRewards(data);
+	BrewUtil.addBrewData(addRewards);
+	BrewUtil.makeBrewButton("manage-brew");
+	BrewUtil.bind({list, filterBox, sourceFilter});
 
-	initHistory();
+	History.init();
 	handleFilterChange();
+	RollerUtil.addListRollButton();
+}
+
+let rewardList = [];
+let rwI = 0;
+function addRewards (data) {
+	if (!data.reward || !data.reward.length) return;
+
+	rewardList = rewardList.concat(data.reward);
+
+	let tempString = "";
+	for (; rwI < rewardList.length; rwI++) {
+		const reward = rewardList[rwI];
+		if (ExcludeUtil.isExcluded(reward.name, "reward", reward.source)) continue;
+
+		tempString += `
+			<li class='row' ${FLTR_ID}='${rwI}' onclick="ListUtil.toggleSelected(event, this)" oncontextmenu="ListUtil.openContextMenu(event, this)">
+				<a id='${rwI}' href='#${UrlUtil.autoEncodeHash(reward)}' title='${reward.name}'>
+					<span class='name col-xs-10'>${reward.name}</span>
+					<span class='source col-xs-2 source${Parser.sourceJsonToAbv(reward.source)}' title='${Parser.sourceJsonToFull(reward.source)}'>${Parser.sourceJsonToAbv(reward.source)}</span>
+				</a>
+			</li>`;
+
+		// populate filters
+		sourceFilter.addIfAbsent(reward.source);
+	}
+	const lastSearch = ListUtil.getSearchTermAndReset(list);
+	$("ul.rewards").append(tempString);
+
+	// sort filters
+	sourceFilter.items.sort(SortUtil.ascSort);
+
+	list.reIndex();
+	if (lastSearch) list.search(lastSearch);
+	list.sort("name");
+	filterBox.render();
+	handleFilterChange();
+
+	ListUtil.setOptions({
+		itemList: rewardList,
+		getSublistRow: getSublistItem,
+		primaryLists: [list]
+	});
+	ListUtil.bindPinButton();
+	EntryRenderer.hover.bindPopoutButton(rewardList);
+	UrlUtil.bindLinkExportButton(filterBox);
+	ListUtil.bindDownloadButton();
+	ListUtil.bindUploadButton();
+	ListUtil.loadState();
+}
+
+function handleFilterChange () {
+	const f = filterBox.getValues();
+	list.filter(function (item) {
+		const r = rewardList[$(item.elm).attr(FLTR_ID)];
+		return filterBox.toDisplay(
+			f,
+			r.source,
+			r.type
+		);
+	});
+	FilterBox.nextIfHidden(rewardList);
+}
+
+function getSublistItem (reward, pinId) {
+	return `
+		<li class="row" ${FLTR_ID}="${pinId}" oncontextmenu="ListUtil.openSubContextMenu(event, this)">
+			<a href="#${UrlUtil.autoEncodeHash(reward)}" title="${reward.name}">
+				<span class="name col-xs-12">${reward.name}</span>		
+				<span class="id hidden">${pinId}</span>				
+			</a>
+		</li>
+	`;
 }
 
 function loadhash (id) {
-	$("#stats").html(tableDefault);
+	const $content = $("#pagecontent").empty();
 	const reward = rewardList[id];
 
-	const name = reward.type === "Demonic Boon" ? "Demonic Boon: " + reward.name : reward.name;
-	$("th#name").html(`<span class="stats-name">${name}</span><span class="stats-source source${reward.source}" title="${Parser.sourceJsonToFull(reward.source)}">${Parser.sourceJsonToAbv(reward.source)}</span>`);
+	$content.append(`
+		${EntryRenderer.utils.getBorderTr()}
+		${EntryRenderer.utils.getNameTr(reward)}
+		<tr id="text"><td class="divider" colspan="6"><div></div></td></tr>
+		${EntryRenderer.reward.getRenderedString(reward)}
+		${EntryRenderer.utils.getBorderTr()}
+	`);
+}
 
-	$("tr.text").remove();
-
-	const textlist = reward.text;
-	let texthtml = "";
-
-	if (reward.ability !== undefined) texthtml += utils_combineText(reward.ability.text, "p", "<span class='bold'>Ability Score Adjustment:</span> ");
-	if (reward.signaturespells !== undefined) texthtml += utils_combineText(reward.signaturespells.text ? reward.signaturespells.text : "None", "p", "<span class='bold'>Signature Spells:</span> ");
-	texthtml += utils_combineText(textlist, "p");
-
-	$("tr#text").after("<tr class='text'><td colspan='6'>"+texthtml+"</td></tr>");
+function loadsub (sub) {
+	filterBox.setFromSubHashes(sub);
+	ListUtil.setFromSubHashes(sub);
 }

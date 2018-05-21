@@ -200,7 +200,6 @@
 		{
 			"name": "Armor of Acid Resistance",
 			"type": "GV",
-			"resist": "acid",
 			"requires": {
 				"armor": true
 			},
@@ -217,7 +216,6 @@
 		{
 			"name": "Armor of Cold Resistance",
 			"type": "GV",
-			"resist": "cold",
 			"requires": {
 				"armor": true
 			},
@@ -234,7 +232,6 @@
 		{
 			"name": "Armor of Fire Resistance",
 			"type": "GV",
-			"resist": "fire",
 			"requires": {
 				"armor": true
 			},
@@ -251,7 +248,6 @@
 		{
 			"name": "Armor of Force Resistance",
 			"type": "GV",
-			"resist": "force",
 			"requires": {
 				"armor": true
 			},
@@ -268,7 +264,6 @@
 		{
 			"name": "Armor of Lightning Resistance",
 			"type": "GV",
-			"resist": "lightning",
 			"requires": {
 				"armor": true
 			},
@@ -285,7 +280,6 @@
 		{
 			"name": "Armor of Necrotic Resistance",
 			"type": "GV",
-			"resist": "necrotic",
 			"requires": {
 				"armor": true
 			},
@@ -302,7 +296,6 @@
 		{
 			"name": "Armor of Poison Resistance",
 			"type": "GV",
-			"resist": "poison",
 			"requires": {
 				"armor": true
 			},
@@ -319,7 +312,6 @@
 		{
 			"name": "Armor of Psychic Resistance",
 			"type": "GV",
-			"resist": "psychic",
 			"requires": {
 				"armor": true
 			},
@@ -336,7 +328,6 @@
 		{
 			"name": "Armor of Radiant Resistance",
 			"type": "GV",
-			"resist": "radiant",
 			"requires": {
 				"armor": true
 			},
@@ -353,7 +344,6 @@
 		{
 			"name": "Armor of Thunder Resistance",
 			"type": "GV",
-			"resist": "thunder",
 			"requires": {
 				"armor": true
 			},
@@ -451,7 +441,7 @@
 				"namePrefix": "Mind Carapace ",
 				"reqAttune": "by a specific individual",
 				"entries": [
-					"Any nonmagical suit of heavy armor can be turned by mind flayers into mind carapace armor. Only one creature can attune to it: either a specific mind flayer or one of its thralls. While worn by any other creature, the mind carapace armor functions as normal armor of its kind. To its intended wearer, the armor grants advantage on Intelligence, Wisdom, and Charisma saving throws and makes its wearer immune to the frightened condition."
+					"Any nonmagical suit of heavy armor can be turned by mind flayers into mind carapace armor. Only one creature can attune to it: either a specific mind flayer or one of its thralls. While worn by any other creature, the mind carapace armor functions as normal armor of its kind. To its intended wearer, the armor grants advantage on Intelligence, Wisdom, and Charisma saving throws and makes its wearer immune to the {@condition frightened} condition."
 				]
 			}
 		},
@@ -678,7 +668,7 @@
 				"page": "139",
 				"namePrefix": "Walloping ",
 				"entries": [
-					" This ammunition packs a wallop. A creature hit by the ammunition must succeed on a DC 10 Strength saving throw or be knocked prone."
+					" This ammunition packs a wallop. A creature hit by the ammunition must succeed on a DC 10 Strength saving throw or be knocked {@condition prone}."
 				]
 			}
 		},
@@ -829,8 +819,9 @@
 				"source": "DMG",
 				"page": "213",
 				"nameSuffix": " of Warning",
+				"reqAttune": "YES",
 				"entries": [
-					"This magic weapon warns you of danger. While the weapon is on your person, you have advantage on initiative rolls. In addition, you and any of your companions within 30 feet of you can't be surprised, except when incapacitated by something other than nonmagical sleep. The weapon magically awakens you and your companions within range if any of you are sleeping naturally when combat begins."
+					"This magic weapon warns you of danger. While the weapon is on your person, you have advantage on initiative rolls. In addition, you and any of your companions within 30 feet of you can't be surprised, except when {@condition incapacitated} by something other than nonmagical sleep. The weapon magically awakens you and your companions within range if any of you are sleeping naturally when combat begins."
 				]
 			}
 		},
@@ -1001,7 +992,7 @@
 				"namePrefix": "Giant Slayer ",
 				"entries": [
 					"You gain a +1 bonus to attack and damage rolls made with this magic weapon.",
-					"When you hit a giant with it, the giant takes an extra 2d6 damage of the weapon's type and must succeed on a DC 15 Strength saving throw or fall prone. For the purpose of this weapon, \"giant\" refers to any creature with the giant type, including ettins and trolls."
+					"When you hit a giant with it, the giant takes an extra 2d6 damage of the weapon's type and must succeed on a DC 15 Strength saving throw or fall {@condition prone}. For the purpose of this weapon, \"giant\" refers to any creature with the giant type, including ettins and trolls."
 				],
 				"modifier": [
 					{
@@ -1034,7 +1025,7 @@
 				"namePrefix": "Giant Slayer ",
 				"entries": [
 					"You gain a +1 bonus to attack and damage rolls made with this magic weapon.",
-					"When you hit a giant with it, the giant takes an extra 2d6 damage of the weapon's type and must succeed on a DC 15 Strength saving throw or fall prone. For the purpose of this weapon, \"giant\" refers to any creature with the giant type, including ettins and trolls."
+					"When you hit a giant with it, the giant takes an extra 2d6 damage of the weapon's type and must succeed on a DC 15 Strength saving throw or fall {@condition prone}. For the purpose of this weapon, \"giant\" refers to any creature with the giant type, including ettins and trolls."
 				],
 				"modifier": [
 					{
@@ -1106,7 +1097,7 @@
 					"type": "entries",
 					"name": "Wish",
 					"entries": [
-						"The sword has 1d4-1 charges. While holding it, you can use an action to expend 1 charge and cast the <a href=\"spells.html#wish_phb\" target=\"_blank\">wish</a> spell from it. This property can't be used again until the next dawn. The sword loses this property if it has no charges."
+						"The sword has 1d4-1 charges. While holding it, you can use an action to expend 1 charge and cast the {@spell wish|phb} spell from it. This property can't be used again until the next dawn. The sword loses this property if it has no charges."
 					]
 				}
 			],
@@ -1133,7 +1124,7 @@
 						"type": "entries",
 						"name": "Wish",
 						"entries": [
-							"The sword has 1d4-1 charges. While holding it, you can use an action to expend 1 charge and cast the <a href=\"spells.html#wish_phb\" target=\"_blank\">wish</a> spell from it. This property can't be used again until the next dawn. The sword loses this property if it has no charges."
+							"The sword has 1d4-1 charges. While holding it, you can use an action to expend 1 charge and cast the {@spell wish|phb} spell from it. This property can't be used again until the next dawn. The sword loses this property if it has no charges."
 						]
 					}
 				],
@@ -1228,7 +1219,8 @@
 				"nameSuffix": " of Life Stealing",
 				"reqAttune": "YES",
 				"entries": [
-					"When you attack a creature with this magic weapon and roll a 20 on the attack roll, that target takes an extra 10 necrotic damage if it isn't a construct or an undead. You also gain 10 temporary hit points."
+					"When you attack a creature with this magic weapon and roll a 20 on the attack roll, that target takes an extra 10 necrotic damage if it isn't a construct or an undead. You also gain 10 temporary hit points.",
+					"{@i Note: According to the SRD, it is an extra 3d6 necrotic damage.}"
 				]
 			}
 		},
@@ -1249,6 +1241,7 @@
 				"entries": [
 					"When you attack an object with this magic sword and hit, maximize your weapon damage dice against the target.",
 					"When you attack a creature with this weapon and roll a 20 on the attack roll, that target takes an extra 14 slashing damage. Then roll another d20. If you roll a 20, you lop off one of the target's limbs, with the effect of such loss determined by the DM. If the creature has no limb to sever, you lop off a portion of its body instead.",
+					"{@i Note: According to the SRD, it is an extra 4d6 slashing damage, although {@link this is incorrect|https://twitter.com/JeremyECrawford/status/949111823990534144}.",
 					"In addition, you can speak the sword's command to cause the blade to shed bright light in a 10-foot radius and dim light for an additional 10 feet. Speaking the command word again or sheathing the sword puts out the light."
 				]
 			}
@@ -1270,7 +1263,7 @@
 					"You gain a +1 bonus to attack and damage rolls made with this magic weapon.",
 					"Curse. This sword is cursed and possessed by a vengeful spirit. Becoming attuned to it extends the curse to you. As long as you remain cursed, you are unwilling to part with the sword, keeping it on your person at all times. While attuned to this weapon, you have disadvantage on attack rolls made with weapons other than this one.",
 					"In addition, while the sword is on your person, you must succeed on a DC 15 Wisdom saving throw whenever you take damage in combat. On a failed save you must attack the creature that damaged you until you drop to 0 hit points or it does, or until you can't reach the creature to make a melee attack against it.",
-					"You can break the curse in the usual ways. Alternatively, casting <a href=\"spells.html#banishment_phb\" target=\"_blank\">banishment</a> on the sword forces the vengeful spirit to leave it. The sword then becomes a +1 weapon with no other properties."
+					"You can break the curse in the usual ways. Alternatively, casting {@spell banishment|phb} on the sword forces the vengeful spirit to leave it. The sword then becomes a +1 weapon with no other properties."
 				],
 				"modifier": [
 					{
@@ -1326,7 +1319,7 @@
 				"namePrefix": "Vicious ",
 				"entries": [
 					"When you roll a 20 with this magic weapon, the target takes an extra 7 {@dmgType} damage.",
-					"NOTE: D&amp;D Beyond and roll20 both say it is an extra 2d6 {@dmgType} damage."
+					"{@i Note: According to the SRD, it is an extra 2d6 {@dmgType} damage.}"
 				]
 			}
 		},
@@ -1364,6 +1357,88 @@
 						]
 					}
 				]
+			}
+		},
+		{
+			"name": "Adamantine Weapon",
+			"type": "GV",
+			"entries": [
+				"Melee weapons made of or coated with adamantine are unusually effective when used to break objects. Whenever an adamantine weapon hits an object, the hit is a critical hit.",
+				"The adamantine version of a melee weapon costs 500 gp more than the normal version, whether the weapon is made of the metal or coated with it."
+			],
+			"requires": {
+				"weapon": true
+			},
+			"excludes": {
+				"name": "Net"
+			},
+			"inherits": {
+				"rarity": "Unknown",
+				"tier": "Major",
+				"source": "XGE",
+				"page": "71",
+				"namePrefix": "Adamantine ",
+				"entries": [
+					"Whenever you hit an object with this weapon, the hit is a critical hit."
+				]
+			}
+		},
+		{
+			"name": "Adamantine Ammunition",
+			"type": "GV",
+			"entries": [
+				"Ammunition made of or coated with adamantine is unusually effective when used to break objects. Whenever a piece of adamantine ammunition hits an object, the hit is a critical hit.",
+				"The adamantine version of ten pieces of ammunition costs 500 gp more than the normal version, whether the ammunition is made of the metal or coated with it."
+			],
+			"requires": {
+				"ammunition": true
+			},
+			"inherits": {
+				"tier": "Minor",
+				"rarity": "Unknown",
+				"source": "XGE",
+				"page": "71",
+				"namePrefix": "Adamantine ",
+				"entries": [
+					"Whenever you hit an object using this ammunition, the hit is a critical hit."
+				]
+			}
+		},
+		{
+			"name": "Silvered Weapon",
+			"type": "GV",
+			"entries": [
+				"Some monsters that have immunity or resistance to nonmagical weapons are susceptible to silver weapons, so cautious adventurers invest extra coin to plate their weapons with silver. You can silver a single weapon for 100 gp. This cost represents not only the price of the silver, but the time and expertise needed to add silver to the weapon without making it less effective."
+			],
+			"requires": {
+				"weapon": true
+			},
+			"excludes": {
+				"name": "Net"
+			},
+			"inherits": {
+				"rarity": "Unknown",
+				"tier": "Major",
+				"source": "PHB",
+				"page": "148",
+				"namePrefix": "Silvered "
+			}
+		},
+		{
+			"name": "Silvered Ammunition",
+			"type": "GV",
+			"entries": [
+				"Some monsters that have immunity or resistance to nonmagical weapons are susceptible to silver ammunition, so cautious adventurers invest extra coin to plate their ammunition in silver. You can silver ten pieces of ammunition for 100 gp. This cost represents not only the price of the silver, but the time and expertise needed to add silver to the ammunition without making it less effective."
+			],
+			"requires": {
+				"ammunition": true
+			},
+			"inherits": {
+				"tier": "Minor",
+				"rarity": "Unknown",
+				"source": "PHB",
+				"page": "148",
+				"namePrefix": "Silvered "
 			}
 		}
 	]

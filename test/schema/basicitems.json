@@ -1,5 +1,6 @@
 {
 	"$schema": "http://json-schema.org/draft-06/schema#",
+	"version": "1.0.0",
 	"definitions": {
 		"itemLookup": {
 			"type": "array",
@@ -14,7 +15,7 @@
 						"type": "string"
 					},
 					"page": {
-						"type": "string"
+						"type": "integer"
 					},
 					"name": {
 						"type": "string"
@@ -78,10 +79,10 @@
 						"type": "string"
 					},
 					"page": {
-						"type": "string"
+						"type": "integer"
 					},
 					"ac": {
-						"type": "string"
+						"type": "integer"
 					},
 					"age": {
 						"type": "string"
@@ -111,7 +112,11 @@
 						}
 					},
 					"property": {
-						"type": "string"
+						"type": "array",
+						"items": {
+							"type": "string",
+							"enum": ["T", "V", "H", "2H", "F", "L", "R", "A", "LD", "S", "AF", "RLD", "BF"]
+						}
 					},
 					"range": {
 						"type": "string"

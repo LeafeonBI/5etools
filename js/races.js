@@ -1,42 +1,147 @@
 "use strict";
 const JSON_URL = "data/races.json";
-let tableDefault = "";
+const JSON_FLUFF_URL = "data/fluff-races.json";
 
-window.onload = function load() {
-	loadJSON(JSON_URL, onJsonLoad)
+window.onload = function load () {
+	ExcludeUtil.initialise();
+	DataUtil.loadJSON(JSON_URL, onJsonLoad)
 };
 
-let raceList;
+function getAbilityObjs (abils) {
+	function makeAbilObj (asi, amount) {
+		return {
+			asi: asi,
+			amount: amount,
+			_toIdString: () => {
+				return `${asi}${amount}`
+			}
+		}
+	}
+
+	const out = new CollectionUtil.ObjectSet();
+	if (abils.choose) {
+		abils.choose.forEach(ch => {
+			const by = ch.amount || 1;
+			ch.from.forEach(asi => {
+				out.add(makeAbilObj(asi, by));
+			});
+		});
+	}
+	Object.keys(abils).forEach(abil => {
+		if (abil !== "choose") {
+			out.add(makeAbilObj(abil, abils[abil]));
+		}
+	});
+	return Array.from(out.values());
+}
+
+function mapAbilityObjToFull (abilObj) {
+	return `${Parser.attAbvToFull(abilObj.asi)} ${abilObj.amount < 0 ? "" : "+"}${abilObj.amount}`;
+}
+
+let list;
+const sourceFilter = getSourceFilter();
+const sizeFilter = new Filter({header: "Size", displayFn: Parser.sizeAbvToFull});
+let filterBox;
 function onJsonLoad (data) {
-	tableDefault = $("#stats").html();
+	list = ListUtil.search({
+		valueNames: ['name', 'ability', 'size', 'source', 'clean-name'],
+		listClass: "races"
+	});
 
-	raceList = data.race;
+	const jsonRaces = EntryRenderer.race.mergeSubraces(data.race);
 
-	const sourceFilter = getSourceFilter();
-	const asiFilter = getAsiFilter();
-	const sizeFilter = new Filter({header: "Size", displayFn: Parser.sizeAbvToFull});
+	const asiFilter = new Filter({
+		header: "Ability Bonus (Including Subrace)",
+		items: [
+			"Strength +2",
+			"Strength +1",
+			"Dexterity +2",
+			"Dexterity +1",
+			"Constitution +2",
+			"Constitution +1",
+			"Intelligence +2",
+			"Intelligence +1",
+			"Wisdom +2",
+			"Wisdom +1",
+			"Charisma +2",
+			"Charisma +1"
+		]
+	});
+	const speedFilter = new Filter({header: "Speed", items: ["Climb", "Fly", "Swim", "Walk"]});
+	const miscFilter = new Filter({
+		header: "Miscellaneous",
+		items: ["Darkvision", "NPC Race"],
+		deselFn: (it) => {
+			return it === "NPC Race";
+		}
+	});
 
-	const filterBox = initFilterBox(
+	filterBox = initFilterBox(
 		sourceFilter,
 		asiFilter,
-		sizeFilter
+		sizeFilter,
+		speedFilter,
+		miscFilter
 	);
+
+	list.on("updated", () => {
+		filterBox.setCount(list.visibleItems.length, list.items.length);
+	});
+
+	// filtering function
+	$(filterBox).on(
+		FilterBox.EVNT_VALCHANGE,
+		handleFilterChange
+	);
+
+	const subList = ListUtil.initSublist({
+		valueNames: ["name", "ability", "size", "id"],
+		listClass: "subraces",
+		getSublistRow: getSublistItem
+	});
+	ListUtil.initGenericPinnable();
+
+	addRaces({race: jsonRaces});
+	BrewUtil.addBrewData(addRaces);
+	BrewUtil.makeBrewButton("manage-brew");
+	BrewUtil.bind({list, filterBox, sourceFilter});
+
+	History.init();
+	handleFilterChange();
+	RollerUtil.addListRollButton();
+}
+
+let raceList = [];
+let rcI = 0;
+function addRaces (data) {
+	if (!data.race || !data.race.length) return;
+
+	raceList = raceList.concat(data.race);
 
 	const racesTable = $("ul.races");
 	let tempString = "";
-	for (let i = 0; i < raceList.length; i++) {
-		const race = raceList[i];
+	for (; rcI < raceList.length; rcI++) {
+		const race = raceList[rcI];
+		if (ExcludeUtil.isExcluded(race.name, "race", race.source)) continue;
 
-		const ability = utils_getAbilityData(race.ability);
-		race._fAbility = ability.asCollection; // used for filtering
+		const ability = race.ability ? utils_getAbilityData(race.ability) : {asTextShort: "None"};
+		race._fAbility = race.ability ? getAbilityObjs(race.ability).map(a => mapAbilityObjToFull(a)) : []; // used for filtering
+		race._fSpeed = race.speed.walk ? [race.speed.climb ? "Climb" : null, race.speed.fly ? "Fly" : null, race.speed.swim ? "Swim" : null, "Walk"].filter(it => it) : "Walk";
+		race._fMisc = [race.darkvision ? "Darkvision" : null, race.npc ? "NPC Race" : null].filter(it => it);
+		// convert e.g. "Elf (High)" to "High Elf" and add as a searchable field
+		const bracketMatch = /^(.*?) \((.*?)\)$/.exec(race.name);
+
+		race._slAbility = ability.asTextShort;
 
 		tempString +=
-			`<li ${FLTR_ID}='${i}'>
-				<a id='${i}' href='#${encodeURI(race.name).toLowerCase()}' title='${race.name}'>
+			`<li class="row" ${FLTR_ID}='${rcI}' onclick="ListUtil.toggleSelected(event, this)" oncontextmenu="ListUtil.openContextMenu(event, this)">
+				<a id='${rcI}' href='#${UrlUtil.autoEncodeHash(race)}' title='${race.name}'>
 					<span class='name col-xs-4'>${race.name}</span>
 					<span class='ability col-xs-4'>${ability.asTextShort}</span>
 					<span class='size col-xs-2'>${Parser.sizeAbvToFull(race.size)}</span>
 					<span class='source col-xs-2 source${race.source}' title="${Parser.sourceJsonToFull(race.source)}">${Parser.sourceJsonToAbv(race.source)}</span>
+					${bracketMatch ? `<span class="clean-name hidden">${bracketMatch[2]} ${bracketMatch[1]}</span>` : ""}
 				</a>
 			</li>`;
 
@@ -44,17 +149,17 @@ function onJsonLoad (data) {
 		sourceFilter.addIfAbsent(race.source);
 		sizeFilter.addIfAbsent(race.size);
 	}
-
+	const lastSearch = ListUtil.getSearchTermAndReset(list);
 	racesTable.append(tempString);
 
 	// sort filters
-	sourceFilter.items.sort(ascSort);
+	sourceFilter.items.sort(SortUtil.ascSort);
 	sizeFilter.items.sort(ascSortSize);
 
-	function ascSortSize(a, b) {
-		return ascSort(toNum(a), toNum(b));
+	function ascSortSize (a, b) {
+		return SortUtil.ascSort(toNum(a), toNum(b));
 
-		function toNum(size) {
+		function toNum (size) {
 			switch (size) {
 				case "M":
 					return 0;
@@ -66,82 +171,176 @@ function onJsonLoad (data) {
 		}
 	}
 
-	const list = search({
-		valueNames: ['name', 'ability', 'size', 'source'],
-		listClass: "races"
-	});
-
+	list.reIndex();
+	if (lastSearch) list.search(lastSearch);
+	list.sort("name");
 	filterBox.render();
-
-	// filtering function
-	$(filterBox).on(
-		FilterBox.EVNT_VALCHANGE,
-		handleFilterChange
-	);
-
-	function handleFilterChange() {
-		list.filter(function(item) {
-			const f = filterBox.getValues();
-			const r = raceList[$(item.elm).attr(FLTR_ID)];
-
-			const rightSource = sourceFilter.toDisplay(f, r.source);
-			const rightAsi = asiFilter.toDisplay(f, r._fAbility);
-			const rightSize = sizeFilter.toDisplay(f, r.size);
-
-			return rightSource && rightAsi && rightSize;
-		})
-	}
-
-	initHistory();
 	handleFilterChange();
+
+	ListUtil.setOptions({
+		itemList: raceList,
+		getSublistRow: getSublistItem,
+		primaryLists: [list]
+	});
+	ListUtil.bindPinButton();
+	EntryRenderer.hover.bindPopoutButton(raceList);
+	UrlUtil.bindLinkExportButton(filterBox);
+	ListUtil.bindDownloadButton();
+	ListUtil.bindUploadButton();
+	ListUtil.loadState();
+}
+
+function handleFilterChange () {
+	const f = filterBox.getValues();
+	list.filter(function (item) {
+		const r = raceList[$(item.elm).attr(FLTR_ID)];
+		return filterBox.toDisplay(
+			f,
+			r.source,
+			r._fAbility,
+			r.size,
+			r._fSpeed,
+			r._fMisc
+		);
+	});
+	FilterBox.nextIfHidden(raceList);
+}
+
+function getSublistItem (race, pinId) {
+	return `
+		<li class="row" ${FLTR_ID}="${pinId}" oncontextmenu="ListUtil.openSubContextMenu(event, this)">
+			<a href="#${UrlUtil.autoEncodeHash(race)}" title="${race.name}">
+				<span class="name col-xs-5">${race.name}</span>		
+				<span class="ability col-xs-5">${race._slAbility}</span>		
+				<span class="size col-xs-2">${Parser.sizeAbvToFull(race.size)}</span>		
+				<span class="id hidden">${pinId}</span>				
+			</a>
+		</li>
+	`;
 }
 
 const renderer = new EntryRenderer();
 function loadhash (id) {
-	$("#stats").html(tableDefault);
-	$("#stats td").show();
+	const $pgContent = $("#pagecontent").empty();
+	$pgContent.find("td").show();
 
 	const race = raceList[id];
 
-	$("th#name").html(`<span class="stats-name">${race.name}</span><span class="stats-source source${race.source}" title="${Parser.sourceJsonToFull(race.source)}">${Parser.sourceJsonToAbv(race.source)}</span>`);
+	function buildStatsTab () {
+		$pgContent.append(`
+		<tbody>
+		${EntryRenderer.utils.getBorderTr()}
+		<tr><th class="name" colspan="6">Name</th></tr>
+		<tr><td id="ability" colspan="6">Ability Scores: <span>+1 Dex</span></td></tr>
+		<tr><td id="size" colspan="6">Size: <span>Medium</span></td></tr>
+		<tr><td id="speed" colspan="6">Speed: <span>30 ft.</span></td></tr>
+		<tr id="traits"><td class="divider" colspan="6"><div></div></td></tr>
+		${EntryRenderer.utils.getBorderTr()}
+		</tbody>		
+		`);
 
-	const size = Parser.sizeAbvToFull (race.size);
-	$("td#size span").html(size);
-	if (size === "") $("td#size").hide();
+		$pgContent.find("th.name").html(`<span class="stats-name">${race.name}</span><span class="stats-source source${race.source}" title="${Parser.sourceJsonToFull(race.source)}">${Parser.sourceJsonToAbv(race.source)}</span>`);
 
-	const ability = utils_getAbilityData(race.ability);
-	$("td#ability span").html(ability.asText);
+		const size = Parser.sizeAbvToFull(race.size);
+		$pgContent.find("td#size span").html(size);
 
-	let speed;
-	if (typeof race.speed === "string") {
-		speed = race.speed + (race.speed === "Varies" ? "" : "ft. ");
-	} else {
-		speed = race.speed.walk + "ft.";
-		if (race.speed.climb) speed += `, climb ${race.speed.climb}ft.`
-	}
-	$("td#speed span").html(speed);
-	if (speed === "") $("td#speed").hide();
+		const ability = race.ability ? utils_getAbilityData(race.ability) : {asText: "None"};
+		$pgContent.find("td#ability span").html(ability.asText);
 
-	const traitlist = race.trait;
-	if (traitlist) {
-		$("tr.trait").remove();
+		$pgContent.find("td#speed span").html(Parser.getSpeedString(race));
 
-		let statsText = "<tr class='text'><td colspan='6'>";
-		for (let n = 0; n < traitlist.length; ++n) {
-			const trait = traitlist[n];
-
-			const header = `<span class='name'>${trait.name}.</span> `;
-			statsText += utils_combineText(traitlist[n].text, "p", header)
-		}
-		statsText += "</td></tr>";
-		$('table#stats tbody tr:last').before(statsText);
-	} else if (race.entries) {
 		const renderStack = [];
-		const faux = {"type": "entries", "entries": race.entries};
+		renderStack.push("<tr class='text'><td colspan='6'>");
+		renderer.recursiveEntryRender({type: "entries", entries: race.entries}, renderStack, 1);
+		renderStack.push("</td></tr>");
+		if (race.npc) {
+			renderStack.push(`<tr class="text"><td colspan="6"><section class="text-muted">`);
+			renderer.recursiveEntryRender(
+				`{@i Note: This race is listed in the {@i Dungeon Master's Guide} as an option for creating NPCs. It is not designed for use as a playable race.}`
+				, renderStack, 2);
+			renderStack.push(`</section></td></tr>`);
+		}
+		renderStack.push(EntryRenderer.utils.getPageTr(race));
 
-		renderer.recursiveEntryRender(faux, renderStack, 1, "<tr class='text'><td colspan='6'>", "</td></tr>", true);
-
-
-		$('table#stats tbody tr:last').before(renderStack.join(""));
+		$pgContent.find('tbody tr:last').before(renderStack.join(""));
 	}
+
+	const traitTab = EntryRenderer.utils.tabButton(
+		"Traits",
+		() => {},
+		buildStatsTab
+	);
+	const infoTab = EntryRenderer.utils.tabButton(
+		"Info",
+		() => {},
+		() => {
+			function get$Tr () {
+				return $(`<tr class="text">`);
+			}
+			function get$Td () {
+				return $(`<td colspan="6" class="text">`);
+			}
+
+			$pgContent.append(EntryRenderer.utils.getBorderTr());
+			$pgContent.append(EntryRenderer.utils.getNameTr(race));
+			let $tr = get$Tr();
+			let $td = get$Td().appendTo($tr);
+			$pgContent.append($tr);
+			$pgContent.append(EntryRenderer.utils.getBorderTr());
+
+			DataUtil.loadJSON(JSON_FLUFF_URL, (data) => {
+				function renderMeta (prop) {
+					let $tr2 = get$Tr();
+					let $td2 = get$Td().appendTo($tr2);
+					$tr.after($tr2);
+					$tr.after(EntryRenderer.utils.getDividerTr());
+					renderer.setFirstSection(true);
+					$td2.append(renderer.renderEntry(data.meta[prop]));
+					$tr = $tr2;
+					$td = $td2;
+				}
+
+				const subFluff = race._baseName && race.name.toLowerCase() === race._baseName.toLowerCase() ? "" : data.race.find(it => it.name.toLowerCase() === race.name.toLowerCase() && it.source.toLowerCase() === race.source.toLowerCase());
+				const baseFluff = data.race.find(it => race._baseName && it.name.toLowerCase() === race._baseName.toLowerCase() && race._baseSource && it.source.toLowerCase() === race._baseSource.toLowerCase());
+				if (race.fluff && race.fluff.entries) { // override; for homebrew usage only
+					renderer.setFirstSection(true);
+					$td.append(renderer.renderEntry({type: "section", entries: race.fluff.entries}));
+				} else if (subFluff || baseFluff) {
+					if (subFluff && subFluff.entries && !baseFluff) {
+						renderer.setFirstSection(true);
+						$td.append(renderer.renderEntry({type: "section", entries: subFluff.entries}));
+					} else if (subFluff && subFluff.entries && baseFluff && baseFluff.entries) {
+						renderer.setFirstSection(true);
+						$td.append(renderer.renderEntry({type: "section", entries: subFluff.entries}));
+						let $tr2 = get$Tr();
+						let $td2 = get$Td().appendTo($tr2);
+						$tr.after($tr2);
+						$tr.after(EntryRenderer.utils.getDividerTr());
+						renderer.setFirstSection(true);
+						$td2.append(renderer.renderEntry({type: "section", name: race._baseName, entries: baseFluff.entries}));
+						$tr = $tr2;
+						$td = $td2;
+					} else if (baseFluff && baseFluff.entries) {
+						renderer.setFirstSection(true);
+						$td.append(renderer.renderEntry({type: "section", entries: baseFluff.entries}));
+					}
+					if ((subFluff && subFluff.uncommon) || (baseFluff && baseFluff.uncommon)) {
+						renderMeta("uncommon");
+					}
+					if ((subFluff && subFluff.monstrous) || (baseFluff && baseFluff.monstrous)) {
+						renderMeta("monstrous");
+					}
+				} else {
+					$td.empty();
+					$td.append(HTML_NO_INFO);
+				}
+			});
+		}
+	);
+	EntryRenderer.utils.bindTabButtons(traitTab, infoTab);
+}
+
+function loadsub (sub) {
+	filterBox.setFromSubHashes(sub);
+	ListUtil.setFromSubHashes(sub);
 }

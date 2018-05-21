@@ -1,5 +1,6 @@
 {
 	"$schema": "http://json-schema.org/draft-06/schema#",
+	"version": "1.0.0",
 	"type": "object",
 	"properties": {
 		"item": {
@@ -21,10 +22,29 @@
 						"type": "string"
 					},
 					"page": {
-						"type": "string"
+						"type": "integer"
+					},
+					"additionalSources": {
+						"type": "array",
+						"items": {
+							"type": "object",
+							"properties": {
+								"source": {
+									"type": "string"
+								},
+								"page": {
+									"type": "integer"
+								}
+							},
+							"required": [
+								"source",
+								"page"
+							],
+							"additionalProperties": false
+						}
 					},
 					"ac": {
-						"type": "string"
+						"type": "integer"
 					},
 					"age": {
 						"type": "string"
@@ -56,6 +76,12 @@
 							"$ref": "/Entry"
 						}
 					},
+					"additionalEntries": {
+						"type": "array",
+						"items": {
+							"$ref": "/Entry"
+						}
+					},
 					"modifier": {
 						"type": "array",
 						"items": {
@@ -80,7 +106,11 @@
 						}
 					},
 					"property": {
-						"type": "string"
+						"type": "array",
+						"items": {
+							"type": "string",
+							"enum": ["T", "V", "H", "2H", "F", "L", "R", "A", "LD", "S", "AF", "RLD", "BF"]
+						}
 					},
 					"range": {
 						"type": "string"
@@ -127,15 +157,35 @@
 					"weight": {
 						"type": "string"
 					},
+					"weightNote": {
+						"type": "string"
+					},
 					"wondrous": {
 						"type": "boolean"
+					},
+					"sentient": {
+						"type": "boolean"
+					},
+					"poison": {
+						"type": "boolean"
+					},
+					"crew": {
+						"type": "integer"
+					},
+					"vehAc": {
+						"type": "integer"
+					},
+					"vehHp": {
+						"type": "integer"
+					},
+					"vehDmgThresh": {
+						"type": "integer"
 					}
 				},
 				"required": [
 					"name",
 					"rarity",
-					"source",
-					"page"
+					"source"
 				],
 				"additionalProperties": false
 			}

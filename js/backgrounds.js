@@ -1,101 +1,135 @@
 "use strict";
 const JSON_URL = "data/backgrounds.json";
-let tabledefault = "";
-let bgList;
+const renderer = new EntryRenderer();
 
-window.onload = function load() {
-	loadJSON(JSON_URL, onJsonLoad);
+window.onload = function load () {
+	ExcludeUtil.initialise();
+	DataUtil.loadJSON(JSON_URL, onJsonLoad);
 };
 
-function onJsonLoad(data) {
-	bgList = data.background;
-
-	tabledefault = $("#stats").html();
-
-	const sourceFilter = getSourceFilter();
-	const filterBox = initFilterBox(sourceFilter);
-
-	const bgTable = $("ul.backgrounds");
-	let tempString = "";
-	for (let i = 0; i < bgList.length; i++) {
-		const bg = bgList[i];
-
-		// populate table
-		tempString +=
-			`<li ${FLTR_ID}="${i}">
-				<a id='${i}' href='#${encodeURI(bg.name).toLowerCase()}' title='${bg.name}'>
-					<span class='name col-xs-9'>${bg.name.replace("Variant ","")}</span> 
-					<span class='source col-xs-3 source${bg.source}' title='${Parser.sourceJsonToFull(bg.source)}'>${Parser.sourceJsonToAbv(bg.source)}</span>
-				</a>
-			</li>`;
-
-		// populate filters
-		sourceFilter.addIfAbsent(bg.source);
-	}
-	bgTable.append(tempString);
-
-	const list = search({
+let list;
+const sourceFilter = getSourceFilter();
+let filterBox = initFilterBox(sourceFilter);
+function onJsonLoad (data) {
+	list = ListUtil.search({
 		valueNames: ['name', 'source'],
 		listClass: "backgrounds"
 	});
 
-	filterBox.render();
-
-	// sort filters
-	sourceFilter.items.sort(ascSort);
+	list.on("updated", () => {
+		filterBox.setCount(list.visibleItems.length, list.items.length);
+	});
 
 	$(filterBox).on(
 		FilterBox.EVNT_VALCHANGE,
 		handleFilterChange
 	);
 
-	function handleFilterChange() {
-		list.filter(function(item) {
-			const f = filterBox.getValues();
-			const bg = bgList[$(item.elm).attr(FLTR_ID)];
+	const subList = ListUtil.initSublist({
+		valueNames: ["name", "id"],
+		listClass: "subbackgrounds",
+		getSublistRow: getSublistItem
+	});
+	ListUtil.initGenericPinnable();
 
-			return sourceFilter.toDisplay(f, bg.source);
-		});
-	}
+	addBackgrounds(data);
+	BrewUtil.addBrewData(addBackgrounds);
+	BrewUtil.makeBrewButton("manage-brew");
+	BrewUtil.bind({list, filterBox, sourceFilter});
 
-	initHistory();
+	History.init();
 	handleFilterChange();
+	RollerUtil.addListRollButton();
+}
+
+let bgList = [];
+let bgI = 0;
+function addBackgrounds (data) {
+	if (!data.background || !data.background.length) return;
+
+	bgList = bgList.concat(data.background);
+
+	const bgTable = $("ul.backgrounds");
+	let tempString = "";
+	for (; bgI < bgList.length; bgI++) {
+		const bg = bgList[bgI];
+		if (ExcludeUtil.isExcluded(bg.name, "background", bg.source)) continue;
+
+		// populate table
+		tempString +=
+			`<li class="row" ${FLTR_ID}="${bgI}" onclick="ListUtil.toggleSelected(event, this)" oncontextmenu="ListUtil.openContextMenu(event, this)">
+				<a id='${bgI}' href='#${UrlUtil.autoEncodeHash(bg)}' title='${bg.name}'>
+					<span class='name col-xs-10'>${bg.name.replace("Variant ", "")}</span>
+					<span class='source col-xs-2 source${bg.source}' title='${Parser.sourceJsonToFull(bg.source)}'>${Parser.sourceJsonToAbv(bg.source)}</span>
+				</a>
+			</li>`;
+
+		// populate filters
+		sourceFilter.addIfAbsent(bg.source);
+	}
+	const lastSearch = ListUtil.getSearchTermAndReset(list);
+	bgTable.append(tempString);
+
+	// sort filters
+	sourceFilter.items.sort(SortUtil.ascSort);
+
+	list.reIndex();
+	if (lastSearch) list.search(lastSearch);
+	list.sort("name");
+	filterBox.render();
+	handleFilterChange();
+
+	ListUtil.setOptions({
+		itemList: bgList,
+		getSublistRow: getSublistItem,
+		primaryLists: [list]
+	});
+	ListUtil.bindPinButton();
+	EntryRenderer.hover.bindPopoutButton(bgList);
+	UrlUtil.bindLinkExportButton(filterBox);
+	ListUtil.bindDownloadButton();
+	ListUtil.bindUploadButton();
+	ListUtil.loadState();
+}
+
+function handleFilterChange () {
+	const f = filterBox.getValues();
+	list.filter(function (item) {
+		const bg = bgList[$(item.elm).attr(FLTR_ID)];
+		return filterBox.toDisplay(f, bg.source);
+	});
+	FilterBox.nextIfHidden(bgList);
+}
+
+function getSublistItem (bg, pinId) {
+	return `
+		<li class="row" ${FLTR_ID}="${pinId}" oncontextmenu="ListUtil.openSubContextMenu(event, this)">
+			<a href="#${UrlUtil.autoEncodeHash(bg)}" title="${bg.name}">
+				<span class="name col-xs-12">${bg.name}</span>		
+				<span class="id hidden">${pinId}</span>				
+			</a>
+		</li>
+	`;
 }
 
 function loadhash (id) {
-	$("#stats").html(tabledefault);
+	const $content = $("#pagecontent").empty();
 	const curbg = bgList[id];
-	const name = curbg.name;
-	const source = curbg.source;
-	const sourceAbv = Parser.sourceJsonToAbv(source);
-	const sourceFull = Parser.sourceJsonToFull(source);
-	$("th#name").html(`<span class="stats-name">${name}</span> <span title="${sourceFull}" class='stats-source source${sourceAbv}'>${sourceAbv}</span>`);
-	const traitlist = curbg.trait;
-	$("tr.trait").remove();
+	const renderStack = [];
+	const entryList = {type: "entries", entries: curbg.entries};
+	renderer.recursiveEntryRender(entryList, renderStack, 1);
 
-	for (let n = traitlist.length-1; n >= 0; n--) {
-		let texthtml = "";
-		texthtml += utils_combineText(traitlist[n].text, "p", "<span class='name'>"+traitlist[n].name+".</span> ");
+	$content.append(`
+		${EntryRenderer.utils.getBorderTr()}
+		${EntryRenderer.utils.getNameTr(curbg)}
+		<tr><td class="divider" colspan="6"><div></div></td></tr>
+		<tr class='trait'><td colspan='6'>${renderStack.join("")}</td></tr>
+		${EntryRenderer.utils.getPageTr(curbg)}
+		${EntryRenderer.utils.getBorderTr()}
+	`);
+}
 
-		const subtraitlist = traitlist[n].subtrait;
-		if (subtraitlist !== undefined) {
-			for (let j = 0; j < subtraitlist.length; j++) {
-				texthtml = texthtml + "<p class='subtrait'>";
-				const subtrait = subtraitlist[j];
-				texthtml = texthtml + "<span class='name'>"+subtrait.name+".</span> ";
-				for (let k = 0; k < subtrait.text.length; k++) {
-					if (!subtrait.text[k]) continue;
-					if (k === 0) {
-						texthtml = texthtml + "<span>" + subtrait.text[k] + "</span>";
-					} else {
-						texthtml = texthtml + "<p class='subtrait'>" + subtrait.text[k] + "</p>";
-					}
-				}
-				texthtml = texthtml + "</p>";
-			}
-		}
-
-		$("tr#traits").after("<tr class='trait'><td colspan='6'>"+texthtml+"</td></tr>");
-	}
-
+function loadsub (sub) {
+	filterBox.setFromSubHashes(sub);
+	ListUtil.setFromSubHashes(sub);
 }

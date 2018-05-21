@@ -1,51 +1,71 @@
 "use strict";
 const JSON_URL = "data/variantrules.json";
 
-window.onload = function load() {
-	loadJSON(JSON_URL, onJsonLoad);
+window.onload = function load () {
+	ExcludeUtil.initialise();
+	DataUtil.loadJSON(JSON_URL, onJsonLoad);
 };
 
-let rulesList;
 let tableDefault;
 
 const entryRenderer = new EntryRenderer();
 
-function getNames(nameStack, entry) {
-	if (entry.name) nameStack.push(entry.name);
-	if (entry.entries) {
-		for (const eX of entry.entries) {
-			getNames(nameStack, eX);
-		}
-	}
-	if (entry.items) {
-		for (const eX of entry.items) {
-			getNames(nameStack, eX);
-		}
-	}
+let list;
+const sourceFilter = getSourceFilter();
+let filterBox;
+
+function onJsonLoad (data) {
+	list = ListUtil.search({
+		valueNames: ['name', 'source', 'search'],
+		listClass: "variantRules"
+	});
+
+	tableDefault = $("#pagecontent").html();
+
+	filterBox = initFilterBox(sourceFilter);
+
+	list.on("updated", () => {
+		filterBox.setCount(list.visibleItems.length, list.items.length);
+	});
+	// filtering function
+	$(filterBox).on(
+		FilterBox.EVNT_VALCHANGE,
+		handleFilterChange
+	);
+
+	addListShowHide();
+
+	addVariantRules(data);
+	BrewUtil.addBrewData(addVariantRules);
+	BrewUtil.makeBrewButton("manage-brew");
+	BrewUtil.bind({list, filterBox, sourceFilter});
+
+	History.init();
 }
 
-function onJsonLoad(data) {
-	rulesList = data;
-	tableDefault = $("#stats").html();
+let rulesList = [];
+let rlI = 0;
+function addVariantRules (data) {
+	if (!data.variantrule || !data.variantrule.length) return;
 
-	const sourceFilter = getSourceFilter();
-	const filterBox = initFilterBox(sourceFilter);
+	rulesList = rulesList.concat(data.variantrule);
 
 	let tempString = "";
-	for (let i = 0; i < rulesList.length; i++) {
-		const curRule = rulesList[i];
+	for (; rlI < rulesList.length; rlI++) {
+		const curRule = rulesList[rlI];
+		if (ExcludeUtil.isExcluded(curRule.name, "variantrule", curRule.source)) continue;
 
 		const searchStack = [];
 		for (const e1 of curRule.entries) {
-			getNames(searchStack, e1);
+			EntryRenderer.getNames(searchStack, e1);
 		}
 
 		// populate table
 		tempString += `
-			<li ${FLTR_ID}='${i}'>
-				<a id='${i}' href='#${encodeForHash(curRule.name)}_${encodeForHash(curRule.source)}' title='${curRule.name}'>
-					<span class='name col-xs-10'>${curRule.name}</span>
-					<span class='source col-xs-2 source${Parser.sourceJsonToAbv(curRule.source)}' title='${Parser.sourceJsonToFull(curRule.source)}'>${Parser.sourceJsonToAbv(curRule.source)}</span>
+			<li ${FLTR_ID}="${rlI}">
+				<a id="${rlI}" href="#${UrlUtil.autoEncodeHash(curRule)}" title="${curRule.name}">
+					<span class="name col-xs-10">${curRule.name}</span>
+					<span class="source col-xs-2 source${Parser.sourceJsonToAbv(curRule.source)}" title="${Parser.sourceJsonToFull(curRule.source)}">${Parser.sourceJsonToAbv(curRule.source)}</span>
 					<span class="search hidden">${searchStack.join(",")}</span>
 				</a>
 			</li>`;
@@ -53,43 +73,34 @@ function onJsonLoad(data) {
 		// populate filters
 		sourceFilter.addIfAbsent(curRule.source);
 	}
+	const lastSearch = ListUtil.getSearchTermAndReset(list);
 	$("ul.variantRules").append(tempString);
+	// sort filters
+	sourceFilter.items.sort(SortUtil.ascSort);
 
-	const list = search({
-		valueNames: ['name', 'source', 'search'],
-		listClass: "variantRules"
-	});
-
-	sourceFilter.items.sort(ascSort);
-
+	list.reIndex();
+	if (lastSearch) list.search(lastSearch);
+	list.sort("name");
 	filterBox.render();
-
-	// filtering function
-	$(filterBox).on(
-		FilterBox.EVNT_VALCHANGE,
-		handleFilterChange
-	);
-
-	function handleFilterChange() {
-		list.filter(function(item) {
-			const f = filterBox.getValues();
-			const r = rulesList[$(item.elm).attr(FLTR_ID)];
-
-			return sourceFilter.toDisplay(f, r.source);
-		});
-	}
-
-	initHistory();
 	handleFilterChange();
+}
+
+function handleFilterChange () {
+	const f = filterBox.getValues();
+	list.filter(function (item) {
+		const r = rulesList[$(item.elm).attr(FLTR_ID)];
+		return filterBox.toDisplay(f, r.source);
+	});
+	FilterBox.nextIfHidden(rulesList);
 }
 
 function loadhash (id) {
 	// reset details pane to initial HTML
-	$("#stats").html(tableDefault);
+	$("#pagecontent").html(tableDefault);
 
 	const curRule = rulesList[id];
 
-	$("th#name").html(curRule.name);
+	$("th.name").html(curRule.name);
 
 	// build text list and display
 	$("tr.text").remove();

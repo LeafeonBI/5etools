@@ -5,6 +5,7 @@
 	"id": "/Entry",
 	"description": "A recursively renderable object.",
 	"type": ["string", "integer", "object"],
+	"version": "1.1.0",
 
 	"definitions" : {
 		"entry": {
@@ -17,6 +18,9 @@
 				},
 				"source": {
 					"type": "string"
+				},
+				"data": {
+					"type": "object"
 				}
 			},
 			"required": [
@@ -24,6 +28,30 @@
 			]
 		},
 
+		"entrySection": {
+			"allOf" : [
+				{"$ref" : "#/definitions/entry"},
+				{
+					"properties": {
+						"type": {"const": "section"},
+						"name": {
+							"type": "string"
+						},
+						"entries": {
+							"type": "array",
+							"items": {
+								"$ref": "/Entry"
+							}
+						},
+						"data": {
+							"type": "object"
+						}
+					},
+					"required": ["entries"],
+					"additionalProperties": false
+				}
+			]
+		},
 		"entryEntries": {
 			"allOf" : [
 				{"$ref" : "#/definitions/entry"},
@@ -38,9 +66,36 @@
 							"items": {
 								"$ref": "/Entry"
 							}
+						},
+						"data": {
+							"type": "object"
 						}
 					},
 					"required": ["entries"],
+					"additionalProperties": false
+				}
+			]
+		},
+		"entryQuote": {
+			"allOf" : [
+				{"$ref" : "#/definitions/entry"},
+				{
+					"properties": {
+						"type": {"const": "quote"},
+						"entries": {
+							"type": "array",
+							"items": {
+								"$ref": "/Entry"
+							}
+						},
+						"by": {
+							"type": "string"
+						},
+						"from": {
+							"type": "string"
+						}
+					},
+					"required": ["entries", "by"],
 					"additionalProperties": false
 				}
 			]
@@ -51,6 +106,24 @@
 				{
 					"properties": {
 						"type": {"const": "inline"},
+						"entries": {
+							"type": "array",
+							"items": {
+								"$ref": "/Entry"
+							}
+						}
+					},
+					"required": ["entries"],
+					"additionalProperties": false
+				}
+			]
+		},
+		"entryEntriesInlineEntries": {
+			"allOf" : [
+				{"$ref" : "#/definitions/entry"},
+				{
+					"properties": {
+						"type": {"const": "inlineBlock"},
 						"entries": {
 							"type": "array",
 							"items": {
@@ -110,14 +183,95 @@
 						"rows": {
 							"type": "array",
 							"items": {
-								"type": "array",
-								"items": {
-									"$ref": "/Entry"
-								}
+								"oneOf" : [
+									{
+										"type": "array",
+										"items": {
+											"$ref": "/Entry"
+										}
+									},
+									"#/definitions/entryTableRow"
+								]
+							}
+						},
+						"footnotes": {
+							"type": "array",
+							"items": {
+								"$ref": "/Entry"
 							}
 						}
 					},
 					"required": ["rows"],
+					"additionalProperties": false
+				}
+			]
+		},
+		"entryTableRow": {
+			"allOf" : [
+				{"$ref" : "#/definitions/entry"},
+				{
+					"properties": {
+						"type": {
+							"const": "row"
+						},
+						"style": {
+							"type": "string"
+						},
+						"row": {
+							"type": "array",
+							"items": {
+								"$ref": "/Entry"
+							}
+						}
+					},
+					"required": [
+						"row"
+					],
+					"additionalProperties": false
+				}
+			]
+		},
+		"entryTableCell": {
+			"allOf" : [
+				{"$ref" : "#/definitions/entry"},
+				{
+					"properties": {
+						"type": {
+							"const": "cell"
+						},
+						"width": {
+							"type": "integer"
+						},
+						"roll": {
+							"type": "object",
+							"properties": {
+								"oneOf": [
+									{
+										"min": {
+											"type": "integer"
+										},
+										"max": {
+											"type": "integer"
+										}
+									},
+									{
+										"exact": {
+											"type": "integer"
+										}
+									}
+								],
+								"entry": {
+									"$ref": "/Entry"
+								},
+								"pad": {
+									"type": "boolean"
+								}
+							}
+						},
+						"entry": {
+							"$ref": "/Entry"
+						}
+					},
 					"additionalProperties": false
 				}
 			]
@@ -128,6 +282,12 @@
 				{
 					"properties": {
 						"type": {"const": "list"},
+						"style": {
+							"type": "string"
+						},
+						"name": {
+							"type": "string"
+						},
 						"items": {
 							"type": "array",
 							"items": {
@@ -176,17 +336,31 @@
 				{
 					"properties": {
 						"type": {"const": "dice"},
-						"number": {
-							"type": "integer"
-						},
-						"faces": {
-							"type": "integer"
+						"toRoll": {
+							"type": "array",
+							"items": {
+								"type": "object",
+								"properties": {
+									"number": {
+										"type": "integer"
+									},
+									"faces": {
+										"type": "integer"
+									},
+									"modifier": {
+										"type": "integer"
+									},
+									"hideModifier": {
+										"type": "boolean"
+									}
+								},
+								"required": ["number", "faces"]
+							}
 						},
                         "rollable": {
                             "type": "boolean"
                         }
 					},
-					"required": ["number", "faces"],
 					"additionalProperties": false
 				}
 			]
@@ -235,6 +409,31 @@
 				}
 			]
 		},
+		"abilityGeneric": {
+			"allOf" : [
+				{"$ref" : "#/definitions/entry"},
+				{
+					"properties": {
+						"type": {"const": "abilityGeneric"},
+						"name": {
+							"type": "string"
+						},
+						"text": {
+							"type": "string"
+						},
+						"attributes": {
+							"type": "array",
+							"items": {
+								"type": "string",
+								"enum": ["str", "dex", "con", "int", "wis", "cha"]
+							}
+						}
+					},
+					"required": ["text"],
+					"additionalProperties": false
+				}
+			]
+		},
 		"entryLink": {
 			"allOf" : [
 				{"$ref" : "#/definitions/entry"},
@@ -255,6 +454,9 @@
 										"hash": {
 											"type": "string"
 										},
+										"hashPreEncoded": {
+											"type": "boolean"
+										},
 										"subhashes": {
 											"type": "array",
 											"items": {
@@ -263,13 +465,46 @@
 													"key": {
 														"type": "string"
 													},
-													"value": {
-														"type": "string"
-													}
+													"oneOf": [
+														{
+															"properties": {
+																"value": {
+																	"type": "string"
+																}
+															},
+															"required": ["value"],
+															"additionalProperties": false
+														},
+														{
+															"properties": {
+																"values": {
+																	"type": "array",
+																	"items": {
+																		"type": "string"
+																	}
+																}
+															},
+															"required": ["values"],
+															"additionalProperties": false
+														}
+													]
 												},
-												"required": ["key", "value"],
+												"required": ["key"],
 												"additionalProperties": false
 											}
+										},
+										"hover": {
+											"type": "object",
+											"properties": {
+												"page": {
+													"type": "string"
+												},
+												"source": {
+													"type": "string"
+												}
+											},
+											"additionalProperties": false,
+											"required": ["page", "source"]
 										}
 									},
 									"required": ["path"],
@@ -292,49 +527,305 @@
 					"additionalProperties": false
 				}
 			]
+		},
+		"entryInvocation": {
+			"allOf" : [
+				{"$ref" : "#/definitions/entry"},
+				{
+					"properties": {
+						"name": {
+							"type": "string"
+						},
+						"type": {"const": "invocation"},
+						"prerequisite": {
+							"type": "string"
+						}
+					},
+					"required": ["name"]
+				}
+			]
+		},
+		"entryPatron": {
+			"allOf" : [
+				{"$ref" : "#/definitions/entry"},
+				{
+					"properties": {
+						"name": {
+							"type": "string"
+						},
+						"type": {"const": "patron"}
+					},
+					"required": ["name"]
+				}
+			]
+		},
+		"entryInset": {
+			"allOf" : [
+				{"$ref" : "#/definitions/entry"},
+				{
+					"properties": {
+						"type": {"const": "inset"},
+						"name": {
+							"type": "string"
+						},
+						"entries": {
+							"type": "array",
+							"items": {
+								"$ref": "/Entry"
+							}
+						},
+						"data": {
+							"type": "object"
+						}
+					},
+					"required": ["entries"],
+					"additionalProperties": false
+				}
+			]
+		},
+		"entryInsetReadaloud": {
+			"allOf" : [
+				{"$ref" : "#/definitions/entry"},
+				{
+					"properties": {
+						"type": {"const": "insetReadaloud"},
+						"entries": {
+							"type": "array",
+							"items": {
+								"$ref": "/Entry"
+							}
+						}
+					},
+					"required": ["entries"]
+				}
+			]
+		},
+		"entryVariant": {
+			"allOf" : [
+				{"$ref" : "#/definitions/entry"},
+				{
+					"properties": {
+						"type": {"const": "variant"},
+						"name": {
+							"type": "string"
+						},
+						"entries": {
+							"type": "array",
+							"items": {
+								"$ref": "/Entry"
+							}
+						},
+						"variantSource": {
+							"type": "object",
+							"properties": {
+								"source": {
+									"type": "string"
+								},
+								"page": {
+									"type": "integer"
+								}
+							},
+							"required": ["source", "page"],
+							"additionalProperties": false
+						}
+					},
+					"required": ["name", "entries"]
+				}
+			]
+		},
+		"entryVariantSub": {
+			"allOf" : [
+				{"$ref" : "#/definitions/entry"},
+				{
+					"properties": {
+						"type": {"const": "variantSub"},
+						"name": {
+							"type": "string"
+						},
+						"entries": {
+							"type": "array",
+							"items": {
+								"$ref": "/Entry"
+							}
+						}
+					},
+					"required": ["name", "entries"],
+					"additionalProperties": false
+				}
+			]
+		},
+		"entryItem": {
+			"allOf" : [
+				{"$ref" : "#/definitions/entry"},
+				{
+					"properties": {
+						"type": {"const": "item"},
+						"name": {
+							"type": "string"
+						},
+						"entry": {
+							"$ref": "/Entry"
+						}
+					},
+					"required": ["name", "entry"],
+					"additionalProperties": false
+				}
+			]
+		},
+		"entryItemSpell": {
+			"allOf" : [
+				{"$ref" : "#/definitions/entry"},
+				{
+					"properties": {
+						"type": {"const": "itemSpell"},
+						"name": {
+							"type": "string"
+						},
+						"entry": {
+							"$ref": "/Entry"
+						}
+					},
+					"required": ["name", "entry"],
+					"additionalProperties": false
+				}
+			]
+		},
+		"entryImage": {
+			"allOf" : [
+				{"$ref" : "#/definitions/entry"},
+				{
+					"properties": {
+						"type": {"const": "image"},
+						"href": {
+							"oneOf": [
+								{
+									"properties": {
+										"type": {"const": "internal"},
+										"path": {
+											"type": "string"
+										}
+									},
+									"required": ["path"],
+									"additionalProperties": false
+								},
+								{
+									"properties": {
+										"type": {"const": "external"},
+										"url": {
+											"type": "string"
+										}
+									},
+									"required": ["url"],
+									"additionalProperties": false
+								}
+							]
+						},
+						"title": {
+							"type": "string"
+						}
+					},
+					"required": ["href"],
+					"additionalProperties": false
+				}
+			]
+		},
+		"entryActions": {
+			"allOf" : [
+				{
+					"properties": {
+						"type": {"const": "actions"},
+						"name": {
+							"type": "string"
+						},
+						"entries": {
+							"type": "array",
+							"items": {
+								"$ref": "/Entry"
+							}
+						}
+					},
+					"required": ["type", "name", "entries"],
+					"additionalProperties": false
+				}
+			]
+		},
+		"entryAttack": {
+			"allOf" : [
+				{"$ref" : "#/definitions/entry"},
+				{
+					"properties": {
+						"type": {"const": "attack"},
+						"attackType": {
+							"type": "string",
+							"enum": ["MW", "RW"]
+						},
+						"attackEntries": {
+							"type": "array",
+							"items": {
+								"$ref": "/Entry"
+							}
+						},
+						"hitEntries": {
+							"type": "array",
+							"items": {
+								"$ref": "/Entry"
+							}
+						}
+					},
+					"required": [
+						"type",
+						"attackType",
+						"attackEntries",
+						"hitEntries"
+					],
+					"additionalProperties": false
+				}
+			]
+		},
+		"entryDataCreature": {
+			"properties": {
+				"type": {"const": "dataCreature"},
+				"dataCreature": {
+					"$ref" : "/Bestiary#/definitions/creature"
+				}
+			},
+			"required": [
+				"type",
+				"dataCreature"
+			]
 		}
-	},
-	"entryInvocation": {
-		"allOf" : [
-			{"$ref" : "#/definitions/entry"},
-			{
-				"properties": {
-					"type": {"const": "invocation"},
-					"prerequisite": {
-						"type": "string"
-					}
-				},
-				"required": ["name"],
-				"additionalProperties": false
-			}
-		]
-	},
-
-	"entryPatron": {
-		"allOf" : [
-			{"$ref" : "#/definitions/entry"},
-			{
-				"properties": {
-					"type": {"const": "patron"}
-				},
-				"required": ["name"],
-				"additionalProperties": false
-			}
-		]
 	},
 
 	"anyOf": [
+		{"$ref": "#/definitions/entrySection"},
 		{"$ref": "#/definitions/entryEntries"},
+		{"$ref": "#/definitions/entryQuote"},
 		{"$ref": "#/definitions/entryInlineEntries"},
+		{"$ref": "#/definitions/entryEntriesInlineEntries"},
 		{"$ref": "#/definitions/entryOptions"},
 		{"$ref": "#/definitions/entryTable"},
+		{"$ref": "#/definitions/entryTableRow"},
+		{"$ref": "#/definitions/entryTableCell"},
 		{"$ref": "#/definitions/entryList"},
 		{"$ref": "#/definitions/entryBonus"},
 		{"$ref": "#/definitions/entryBonusSpeed"},
 		{"$ref": "#/definitions/entryDice"},
 		{"$ref": "#/definitions/entryAbilityDc"},
 		{"$ref": "#/definitions/entryAbilityAttackMod"},
+		{"$ref": "#/definitions/abilityGeneric"},
 		{"$ref": "#/definitions/entryLink"},
+		{"$ref": "#/definitions/entryInvocation"},
+		{"$ref": "#/definitions/entryPatron"},
+		{"$ref": "#/definitions/entryInset"},
+		{"$ref": "#/definitions/entryInsetReadaloud"},
+		{"$ref": "#/definitions/entryVariant"},
+		{"$ref": "#/definitions/entryVariantSub"},
+		{"$ref": "#/definitions/entryItem"},
+		{"$ref": "#/definitions/entryImage"},
+		{"$ref": "#/definitions/entryActions"},
+		{"$ref": "#/definitions/entryAttack"},
+		{"$ref": "#/definitions/entryAttack"},
+		{"$ref": "#/definitions/entryDataCreature"},
 		{"type": "string"},
 		{"type": "integer"}
 	]
